@@ -1,0 +1,144 @@
+{
+  "symbol": "ETHUSDT",
+  "status": "ready",
+  "generated_at_utc": "2026-10-22T14:27:40.349740+00:00",
+  "model_version": "1.0.0",
+  "feature_version": "1.0.0",
+  "train_period": {
+    "start": "2024-11-13",
+    "end": "2026-05-31",
+    "n_train": 565
+  },
+  "test_period": {
+    "start": "2026-06-02",
+    "end": "2026-10-21",
+    "n_test": 142
+  },
+  "last_closed_day": "2026-10-21",
+  "horizon_days": 1,
+  "selected_model": "xgboost",
+  "forecast_vol_daily": 0.0295139328497165,
+  "forecast_vol_annualized_pct": 56.38628953690913,
+  "forecast_vol_7d": 0.07808652653180972,
+  "forecast_7d_note": "vol 1 ngày x sqrt(7) (giả định độc lập, chỉ để tham chiếu quy mô)",
+  "models_vol_daily": {
+    "historical_22d": 0.023214443405894118,
+    "har_rv": 0.030140915161738682,
+    "xgboost": 0.0295139328497165,
+    "garch_1_1": 0.03240397943785668
+  },
+  "models_vol_annualized_pct": {
+    "historical_22d": 44.35113185315491,
+    "har_rv": 57.584137562118784,
+    "xgboost": 56.38628953690913,
+    "garch_1_1": 61.907715790868835
+  },
+  "current_realized_vol_daily": 0.01846296813368941,
+  "current_realized_vol_annualized_pct": 35.27345109165747,
+  "regime": {
+    "regime": "normal",
+    "label_vi": "Bình thường",
+    "description": "Biến động nằm trong vùng thường gặp trong lịch sử tham chiếu.",
+    "percentile_vs_train": 49.38053097345133,
+    "thresholds": {
+      "q25": 0.02219266445609984,
+      "q75": 0.04044748206922732,
+      "q90": 0.05306712776080219,
+      "rule": "Low<q25 | Normal q25-q75 | Elevated q75-q90 | High/Stress>q90 (phân vị realized vol tập train)"
+    }
+  },
+  "risk": {
+    "reference_position_usd": 10000.0,
+    "horizon_days": 1,
+    "selected_model": "xgboost",
+    "selection_rule": "QLIKE out-of-sample thấp nhất trên tập test theo thứ tự thời gian",
+    "forecast_based": {
+      "method": "forecast_vol_student_t",
+      "t_df": 2.8241060010516983,
+      "sigma_daily": 0.0295139328497165,
+      "horizon_days": 1,
+      "assumption": "Lợi suất kỳ tới = sigma_dự_báo x epsilon, epsilon ~ Student-t chuẩn hoá (phương sai 1). Mu=0.",
+      "var_95": 384.925101688865,
+      "es_95": 648.9297843895822,
+      "var_99": 761.2545147593437,
+      "es_99": 1236.3951894598317,
+      "var_95_pct": 3.8492510168886502,
+      "es_95_pct": 6.489297843895822,
+      "var_99_pct": 7.612545147593437,
+      "es_99_pct": 12.363951894598317
+    },
+    "historical_simulation": {
+      "method": "historical_simulation",
+      "n_obs": 250,
+      "assumption": "Phân phối thực nghiệm của lợi suất quá khứ đại diện cho kỳ tới",
+      "var_95": 379.82087295004936,
+      "es_95": 532.3517342424044,
+      "var_99": 547.408554948294,
+      "es_99": 788.4210155912493,
+      "var_95_pct": 3.7982087295004936,
+      "es_95_pct": 5.323517342424044,
+      "var_99_pct": 5.47408554948294,
+      "es_99_pct": 7.884210155912494
+    },
+    "parametric_student_t": {
+      "method": "parametric_student_t",
+      "params": {
+        "df": 2.8241060010516983,
+        "loc": -0.0006238742383210243,
+        "scale": 0.022530488495946258
+      },
+      "assumption": "Lợi suất ~ Student-t(df, loc, scale) fit trên cửa sổ lịch sử; ES bằng Monte Carlo seed cố định (200k mô phỏng)",
+      "var_95": 551.9087942203421,
+      "es_95": 925.7404842002543,
+      "var_99": 1082.7215835726863,
+      "es_99": 1698.2067569217281,
+      "var_95_pct": 5.519087942203421,
+      "es_95_pct": 9.257404842002542,
+      "var_99_pct": 10.827215835726863,
+      "es_99_pct": 16.982067569217282
+    },
+    "convention": "LOSS = -simple_return x position (số dương = lỗ). VaR là ngưỡng lỗ, không phải lỗ tối đa."
+  },
+  "metrics_oos": {
+    "historical_22d": {
+      "mae_vol": 0.009497665879267982,
+      "rmse_vol": 0.013070632981315711,
+      "qlike": 0.5897962556545616,
+      "n": 142
+    },
+    "garch_1_1": {
+      "mae_vol": 0.016429985706029278,
+      "rmse_vol": 0.01874029012928869,
+      "qlike": 0.6624096703654669,
+      "n": 142
+    },
+    "har_rv": {
+      "mae_vol": 0.011830460247226225,
+      "rmse_vol": 0.014489175061493973,
+      "qlike": 0.5228486798352734,
+      "n": 142
+    },
+    "xgboost": {
+      "mae_vol": 0.010261750801379421,
+      "rmse_vol": 0.01313350804996129,
+      "qlike": 0.46109502397815527,
+      "n": 142
+    }
+  },
+  "interpretation": {
+    "market_summary": "Volatility dự báo của ETH/USDT đang ở mức bình thường theo phân vị của tập huấn luyện. Cao hơn khoảng 49% số ngày trong giai đoạn huấn luyện. Điều này cho biết quy mô dao động có thể xảy ra, không cho biết giá sẽ tăng hay giảm.",
+    "risk_summary": "VaR 95% 1 ngày khoảng 385 USD trên vị thế tham chiếu 10,000 USD: theo mô hình, mức lỗ vượt ngưỡng này có xác suất đuôi khoảng 5% trong một ngày. Đây không phải mức lỗ tối đa. Expected Shortfall 95% khoảng 649 USD là mức lỗ trung bình có điều kiện trong nhóm 5% kết quả tệ nhất.",
+    "model_summary": "Mô hình được dùng cho VaR là xgboost vì có QLIKE out-of-sample thấp nhất (0.461) trong kỳ kiểm tra hiện tại.",
+    "what_could_be_wrong": [
+      "Tin tức/sự kiện thanh khoản cực đoan ngoài mẫu lịch sử có thể làm realized vol vượt xa dự báo.",
+      "Phân phối Student-t giả định đuôi đối xứng; thực tế đuôi giảm có thể nặng hơn.",
+      "Nếu dữ liệu mới chưa được cập nhật (stale), dự báo phản ánh trạng thái cũ, không phải hiện tại."
+    ]
+  },
+  "limitations": [
+    "Dự báo volatility không dự báo hướng giá tăng/giảm.",
+    "VaR/ES dựa trên phân phối quá khứ/mô hình tham số; cú sốc chưa từng xuất hiện có thể vượt xa ước lượng.",
+    "RV ngày tính từ lợi suất 1h, không dùng dữ liệu tick; microstructure noise có thể ảnh hưởng.",
+    "Mô hình được chọn theo QLIKE out-of-sample trong cửa sổ test hiện tại; thứ hạng có thể đổi khi dữ liệu mới đến."
+  ]
+}

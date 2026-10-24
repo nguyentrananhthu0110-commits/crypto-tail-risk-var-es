@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CRI: 1 Cai dat thu vien (PowerShell)",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\setup.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "CRI: 2 Nap du lieu va huan luyen (PowerShell)",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\prepare_data.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "CRI: Cap nhat du lieu (PowerShell)",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\update_data.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "CRI: 3 Mo ung dung (PowerShell)",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\run_app.ps1"],
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}
