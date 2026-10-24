@@ -1,0 +1,32 @@
+CRYPTO RISK INTELLIGENCE - CACH CHAY KHONG CAN CMD
+==================================================
+
+Ban ZIP nay da dong goi SAN du lieu va mo hinh tham chieu.
+Vi vay lan dau ban khong bat buoc phai nap du lieu ngay.
+
+CACH DE NHAT (khuyen nghi)
+--------------------------
+1. Giai nen toan bo ZIP (Extract All). Khong chay file ben trong man hinh xem ZIP.
+2. Mo thu muc crypto-risk-intelligence.
+3. Double-click START_HERE.pyw.
+4. Bam "1) Cai dat thu vien" va doi hoan tat.
+5. Bam "3) Mo ung dung". Trinh duyet se mo http://127.0.0.1:8765.
+
+Neu double-click START_HERE.pyw lai mo VS Code/Notepad:
+- Nhap chuot phai vao START_HERE.pyw -> Open with -> Python; hoac
+- Mo PowerShell trong thu muc nay va chay:  py .\START_HERE.pyw
+
+NAP DU LIEU MOI
+---------------
+Co 3 cach, chon 1 cach:
+A. Trong START_HERE.pyw: bam "2) Nap du lieu & huan luyen" hoac "Cap nhat du lieu".
+B. Trong trinh duyet: mo tab "Du lieu & he thong" -> bam "Nap du lieu & huan luyen".
+C. Bang PowerShell:
+   powershell -ExecutionPolicy Bypass -File .\setup.ps1
+   powershell -ExecutionPolicy Bypass -File .\prepare_data.ps1
+   powershell -ExecutionPolicy Bypass -File .\run_app.ps1
+
+Neu dang dung VS Code:
+Mo thu muc crypto-risk-intelligence -> Terminal -> Run Task -> chon cac task "CRI: ...".
+
+Cac file .cmd van duoc giu lam phuong an phu; ban khong can dung chung.
