@@ -49,8 +49,7 @@ button { color: inherit; }
 /* Sidebar */
 .sidebar { width: 236px; flex: 0 0 236px; min-height: 100vh; display: flex; flex-direction: column; padding: 22px 14px 16px; background: var(--sidebar); border-right: 1px solid var(--line-soft); }
 .brand { display: flex; align-items: center; gap: 11px; padding: 0 10px 28px; }
-.brand-mark { width: 40px; height: 40px; display: grid; grid-template-columns: repeat(3, 1fr); align-items: end; gap: 2px; padding: 9px 7px; border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent); border-radius: 11px; color: var(--accent); background: linear-gradient(140deg, color-mix(in srgb, var(--accent) 19%, transparent), transparent); font: 800 9px var(--mono); }
-.brand-mark span:nth-child(1) { align-self: end; }.brand-mark span:nth-child(2) { align-self: center; }.brand-mark span:nth-child(3) { align-self: start; }
+.brand-mark { width: 40px; height: 40px; flex: 0 0 40px; display: block; object-fit: contain; border-radius: 11px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 26%, transparent), 0 6px 16px -8px color-mix(in srgb, var(--accent) 55%, transparent); }
 .brand strong { display: block; font-size: 17px; letter-spacing: .08em; line-height: 1; }.brand div:last-child span { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; white-space: nowrap; }
 .primary-nav { display: grid; gap: 4px; }
 .nav-item { width: 100%; display: flex; align-items: center; gap: 11px; padding: 11px 12px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; text-align: left; transition: background .22s ease, color .22s ease, border-color .22s ease; }

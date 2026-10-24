@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>CRI — Crypto Risk Intelligence</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span>C</span><span>R</span><span>I</span></div>
+        <div><strong>CRI</strong><span>Crypto Risk Intelligence</span></div>
+      </div>
+
+      <nav class="primary-nav" aria-label="Điều hướng chính">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">⌂</span><span>Dashboard</span></button>
+        <button class="nav-item" data-view="risk"><span class="nav-icon">◈</span><span>Risk Monitor</span><span class="nav-badge">1</span></button>
+        <button class="nav-item" data-view="models"><span class="nav-icon">⌁</span><span>Model Analytics</span></button>
+        <button class="nav-item" data-view="backtest"><span class="nav-icon">↗</span><span>Backtesting</span></button>
+        <button class="nav-item" data-view="explain"><span class="nav-icon">i</span><span>Explainability</span></button>
+        <button class="nav-item" data-view="data"><span class="nav-icon">▦</span><span>Data &amp; System</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-note"><span class="live-dot"></span><div><strong>Research workspace</strong><small>Data &amp; models synchronized</small></div></div>
+        <button class="nav-item" data-view="data"><span class="nav-icon">⚙</span><span>Settings</span></button>
+        <div class="sidebar-foot">v1.0 · Local analytics</div>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="mobile-menu" aria-label="Mở menu">☰</button>
+        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="breadcrumb-title">Dashboard</strong></div>
+        <div class="topbar-actions">
+          <label class="search-box"><span>⌕</span><input id="global-search" type="search" placeholder="Search modules, metrics..." aria-label="Tìm kiếm trong dashboard"></label>
+          <div class="asset-switch" id="symbol-switch" role="tablist" aria-label="Chọn tài sản">
+            <button class="active" data-symbol="BTCUSDT">BTC</button><button data-symbol="ETHUSDT">ETH</button>
+          </div>
+          <button class="icon-button" id="theme-toggle" type="button" aria-label="Chuyển giao diện">☾</button>
+          <span id="conn-badge" class="status-pill neutral"><span class="status-dot"></span>Connecting</span>
+          <button class="avatar" type="button" aria-label="Tài khoản">J</button>
+        </div>
+      </header>
+
+      <div id="stale-banner" class="notice hidden"><span id="stale-text"></span><button id="btn-retry-live" class="text-button">Retry</button></div>
+      <div id="empty-state" class="empty-state hidden">
+        <span class="eyebrow">MODEL SETUP</span><h2 id="empty-title">Model chưa được khởi tạo</h2>
+        <p id="empty-text">Nạp dữ liệu lịch sử và huấn luyện mô hình để bật các chỉ số dự báo.</p>
+        <button id="btn-prepare-browser" class="button primary">Nạp dữ liệu &amp; huấn luyện</button>
+      </div>
+
+      <div class="content-wrap">
+        <div class="page-heading">
+          <div><span class="eyebrow">MARKET INTELLIGENCE / LIVE MONITORING</span><h1 id="page-title">Market overview</h1><p id="page-subtitle">Real-time volatility, model forecasts and tail-risk signals for digital assets.</p></div>
+          <div class="heading-meta"><span class="date-chip">◷ <span id="last-sync">—</span></span><button class="button ghost" id="refresh-all">↻ Refresh</button></div>
+        </div>
+
+        <section class="view active" id="view-dashboard" data-view-panel="dashboard">
+          <div class="kpi-grid">
+            <article class="metric-card accent-cyan"><div class="metric-top"><span>Current price</span><span class="metric-icon">$</span></div><strong id="kpi-price" class="metric-value skeleton">—</strong><span id="kpi-change" class="metric-delta muted">24h: —</span></article>
+            <article class="metric-card accent-violet"><div class="metric-top"><span>Forecast volatility</span><span class="metric-icon">⌁</span></div><strong id="kpi-fvol" class="metric-value">—</strong><span id="kpi-fvol-sub" class="metric-delta muted">1-day annualized</span></article>
+            <article class="metric-card accent-amber"><div class="metric-top"><span>VaR 95%</span><span class="metric-icon">◈</span></div><strong id="kpi-var" class="metric-value">—</strong><span id="kpi-var-sub" class="metric-delta muted">Reference position</span></article>
+            <article class="metric-card accent-green"><div class="metric-top"><span>Risk regime</span><span class="metric-icon">◉</span></div><strong id="kpi-regime" class="metric-value">—</strong><span id="kpi-regime-sub" class="metric-delta muted">Training percentile</span></article>
+          </div>
+
+          <div id="summary-band" class="insight-banner hidden"><span class="insight-symbol">✦</span><p id="summary-text"></p></div>
+
+          <div class="dashboard-grid">
+            <article class="panel chart-panel large-panel">
+              <div class="panel-heading"><div><span class="eyebrow">MARKET DATA</span><h2 id="chart-title">BTC/USDT</h2><p class="panel-subtitle">OHLC price action · live market feed</p></div><div class="panel-actions"><div class="range-switch" id="tf-seg"><button data-tf="5m">5m</button><button data-tf="15m">15m</button><button data-tf="1h" class="active">1H</button><button data-tf="4h">4H</button><button data-tf="1d">1D</button></div><button id="chart-reset" class="icon-button" title="Đặt lại góc nhìn">⤢</button></div></div>
+              <div class="chart-note">Live candles update independently from the 1-day forecast horizon.</div>
+              <div class="chart-wrap"><canvas id="main-chart" height="430"></canvas><div id="chart-tooltip" class="tooltip hidden"></div><div id="chart-loading" class="chart-loading hidden">Loading market data…</div></div>
+              <div class="chart-foot"><span id="chart-meta">—</span><span id="price-src">Binance Public Data</span></div>
+            </article>
+
+            <article class="panel risk-panel"><div class="panel-heading"><div><span class="eyebrow">TAIL RISK</span><h2>Risk monitor</h2><p class="panel-subtitle">1-day loss distribution</p></div><span class="risk-badge" id="risk-badge">—</span></div><div class="risk-gauge"><div class="gauge-ring"><span id="r-var95">—</span><small>VaR 95%</small></div><div class="risk-stat"><span>Expected Shortfall</span><strong id="r-es95">—</strong><small id="r-es95-pct">—</small></div></div><div class="risk-divider"></div><div class="risk-mini-grid"><div><span>VaR 99%</span><strong id="r-var99">—</strong></div><div><span>ES 99%</span><strong id="r-es99">—</strong></div></div><p id="risk-interpretation" class="panel-copy">Risk metrics will appear when the model is ready.</p><button class="button secondary full" data-view-jump="risk">Open risk details <span>→</span></button></article>
+          </div>
+
+          <div class="bottom-grid">
+            <article class="panel"><div class="panel-heading"><div><span class="eyebrow">MODEL SNAPSHOT</span><h2>Forecast model ranking</h2></div><button class="text-button" data-view-jump="models">View analytics →</button></div><div id="model-vol-list" class="model-list"><div class="loading-line"></div><div class="loading-line short"></div><div class="loading-line"></div></div></article>
+            <article class="panel"><div class="panel-heading"><div><span class="eyebrow">SYSTEM</span><h2>Latest update</h2></div><span class="status-pill ready">Ready</span></div><div class="system-summary"><div><span>Model generated</span><strong id="kpi-updated">—</strong></div><div><span>Data source</span><strong>Binance public API</strong></div><div><span>Forecast horizon</span><strong>1 day</strong></div></div></article>
+          </div>
+        </section>
+
+        <section class="view hidden" id="view-risk" data-view-panel="risk">
+          <div class="section-grid two-col"><article class="panel"><div class="panel-heading"><div><span class="eyebrow">RISK ENGINE</span><h2>Risk outlook</h2><p class="panel-subtitle">Compare assumptions behind the loss estimate.</p></div><label class="input-label">Reference position (USD)<input id="position-input" type="number" min="100" step="1000" value="10000"></label></div><div class="range-switch wide" id="method-seg"><button class="active" data-method="forecast_based">Forecast based</button><button data-method="historical_simulation">Historical simulation</button><button data-method="parametric_student_t">Student-t</button></div><p id="risk-method-note" class="panel-copy"></p><div class="risk-grid"><div class="risk-box"><span>VaR 95%</span><strong id="risk-var95-large">—</strong><small id="risk-var95-pct">—</small></div><div class="risk-box"><span>ES 95%</span><strong id="risk-es95-large">—</strong><small id="risk-es95-pct">—</small></div><div class="risk-box warning"><span>VaR 99%</span><strong id="risk-var99-large">—</strong><small id="risk-var99-pct">—</small></div><div class="risk-box warning"><span>ES 99%</span><strong id="risk-es99-large">—</strong><small id="risk-es99-pct">—</small></div></div><div class="callout">VaR is a threshold, not a maximum loss. ES estimates the average loss inside the worst tail.</div></article><article class="panel"><div class="panel-heading"><div><span class="eyebrow">REGIME</span><h2>Why this risk state?</h2></div><span id="risk-regime-label" class="status-pill neutral">—</span></div><p id="regime-desc" class="panel-copy">—</p><div class="regime-scale" id="regime-scale"><span>Low</span><span>Normal</span><span>Elevated</span><span>Stress</span><i id="regime-marker"></i></div><dl id="vol-kv" class="definition-list"></dl><h3 class="subheading">Model volatility estimates</h3><div id="risk-model-list"></div></article></div>
+        </section>
+
+        <section class="view hidden" id="view-models" data-view-panel="models"><article class="panel"><div class="panel-heading"><div><span class="eyebrow">OUT-OF-SAMPLE EVALUATION</span><h2>Actual vs forecast volatility</h2><p id="perf-note" class="panel-subtitle">—</p></div><div id="perf-legend" class="legend"></div></div><div class="chart-wrap short"><canvas id="perf-chart" height="300"></canvas></div><div class="table-wrap"><table id="metrics-table"><thead><tr><th>Model</th><th>MAE</th><th>RMSE</th><th>QLIKE</th><th>Observations</th><th>Status</th></tr></thead><tbody></tbody></table></div><details><summary>Diebold–Mariano test &amp; QLIKE</summary><div id="dm-box" class="details-body"></div></details></article></section>
+
+        <section class="view hidden" id="view-backtest" data-view-panel="backtest"><article class="panel"><div class="panel-heading"><div><span class="eyebrow">VALIDATION</span><h2>VaR breach backtest</h2><p id="bt-method" class="panel-subtitle">—</p></div><span class="status-pill neutral">Rolling evaluation</span></div><div class="chart-wrap short"><canvas id="bt-chart" height="280"></canvas></div><div class="section-grid two-col inner"><div><h3 class="subheading">VaR 95% diagnostics</h3><div id="bt95"></div></div><div><h3 class="subheading">VaR 99% diagnostics</h3><div id="bt99"></div></div></div><details><summary>Breach dates</summary><div class="table-wrap"><table id="breach-table"><thead><tr><th>Date (UTC)</th><th>Actual loss</th><th>VaR 95%</th><th>VaR 99%</th><th>Type</th></tr></thead><tbody></tbody></table></div></details></article></section>
+
+        <section class="view hidden" id="view-explain" data-view-panel="explain"><div class="section-grid two-col"><article class="panel"><div class="panel-heading"><div><span class="eyebrow">XGBOOST</span><h2>Feature importance</h2></div></div><div id="importance-list"></div><p id="importance-note" class="panel-copy"></p></article><article class="panel"><div class="panel-heading"><div><span class="eyebrow">MODEL LIMITS</span><h2>What could be wrong?</h2></div></div><ul id="wrong-list" class="plain-list"></ul><h3 class="subheading">Known limitations</h3><ul id="limit-list" class="plain-list"></ul></article></div><article class="panel"><div class="panel-heading"><div><span class="eyebrow">METHODOLOGY</span><h2>Transparent assumptions</h2></div></div><details open><summary>Definitions &amp; formulas</summary><div id="method-defs" class="details-body"></div></details><details><summary>Saved model parameters</summary><pre id="method-params" class="code"></pre></details></article></section>
+
+        <section class="view hidden" id="view-data" data-view-panel="data"><article class="panel"><div class="panel-heading"><div><span class="eyebrow">DATA OPERATIONS</span><h2>Datasets &amp; system health</h2></div><div class="button-row"><button id="btn-prepare-data" class="button primary">Prepare &amp; train</button><button id="btn-update" class="button ghost">Update missing</button><button id="btn-retrain" class="button ghost">Retrain</button><button id="btn-refresh-status" class="button ghost">Refresh</button></div></div><p class="panel-copy">Background jobs do not block the dashboard. Forecasts update from closed UTC days; live prices update separately.</p><div class="table-wrap"><table id="dataset-table"><thead><tr><th>Asset</th><th>Interval</th><th>Rows</th><th>Last update (UTC)</th><th>Status</th></tr></thead><tbody></tbody></table></div><h3 class="subheading">Recent jobs</h3><div class="table-wrap"><table id="jobs-table"><thead><tr><th>Job</th><th>Asset</th><th>Finished (UTC)</th><th>Status</th></tr></thead><tbody></tbody></table></div><p id="job-status" class="panel-copy"></p><details><summary>Data quality</summary><div class="table-wrap"><table id="quality-table"><thead><tr><th>Dataset</th><th>File</th><th>Rows</th><th>Gaps</th><th>Duplicates</th><th>OHLC issues</th><th>UTC range</th></tr></thead><tbody></tbody></table></div><p id="model-files-note" class="panel-copy"></p></details></article></section>
+      </div>
+
+      <footer class="app-footer"><span>CRI is a quantitative research and risk-support tool. Not investment advice.</span><span>Data: Binance public market data · UTC storage</span></footer>
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div><div id="tip-pop" class="tip-pop hidden"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

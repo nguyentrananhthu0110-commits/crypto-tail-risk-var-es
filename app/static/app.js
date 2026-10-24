@@ -297,10 +297,10 @@ function riskExplainText(f) {
   const r = f.risk?.[state.method] || f.risk?.forecast_based || {};
   const selected = MODEL_NAMES[f.selected_model] || f.selected_model || "mô hình mặc định";
   if (state.method === "forecast_based") {
-    return `VaR theo dự báo lấy biến động 1 ngày của ${selected}, kết hợp phần đuôi Student-t (df ${fmtNum(r.t_df, 1)}) và quy mô theo vị thế ${fmtUSD(r.reference_position_usd ?? state.position)}. Hiệu ứng: biến động dự báo càng cao → VaR/ES càng lớn → cần nắm giữ tài sản bảo dậ nhiều hơn; VaR không phải mức lỗ tối đa, chỉ là ngưỡng có khoảng 5% xác suất vượt qua trong 1 ngày.`;
+    return `VaR theo dự báo lấy biến động 1 ngày của ${selected}, kết hợp phần đuôi Student-t (df ${fmtNum(r.t_df, 1)}) và quy mô theo vị thế ${fmtUSD(r.reference_position_usd ?? state.position)}. Hiệu ứng: biến động dự báo càng cao → VaR/ES càng lớn → cần nắm giữ tài sản bảo vệ nhiều hơn; VaR không phải mức lỗ tối đa, chỉ là ngưỡng có khoảng 5% xác suất vượt qua trong 1 ngày.`;
   }
   if (state.method === "historical_simulation") {
-    return `Mô phỏng lịch sử lấy ${r.n_obs || "nhiều"} lợi suất ngày gần nhất, tính ngưỡng trực tiếp từ quan sát thực, không áp đặt phân phối nào. Hiệu ứng: phản ánh thật các khủng biến lịch sử, nhưng nếu tiền này chưa từng trải qua crisi dữ liệu thì ngưỡng có thể bị đánh giá thấp.`;
+    return `Mô phỏng lịch sử lấy ${r.n_obs || "nhiều"} lợi suất ngày gần nhất, tính ngưỡng trực tiếp từ quan sát thực, không áp đặt phân phối nào. Hiệu ứng: phản ánh đúng các cú sốc lịch sử, nhưng nếu tài sản này chưa từng trải qua giai đoạn khủng hoảng thì ngưỡng có thể bị đánh giá thấp.`;
   }
   return `Student-t tham số được ước lượng trên toàn bộ lịch sử lợi suất ngày (df ${fmtNum(r.params?.df, 1)}). Hiệu ứng: phân phối Student-t có đuôi dày hơn chuẩn ⇒ ES thường cao hơn VaR tương ứng, phù hợp với tài sản crypto có độ nhạy cao.`;
 }
@@ -310,11 +310,11 @@ function modelsExplainText(p) {
   const mae = m?.mae_vol == null ? "—" : fmtPct(m.mae_vol * 100, 2);
   const rmse = m?.rmse_vol == null ? "—" : fmtPct(m.rmse_vol * 100, 2);
   const qlike = m?.qlike == null ? "—" : fmtNum(m.qlike, 3);
-  return `Mô hình ${best} được chọn vì có QLIKE ngoài mẫu thấp nhất (${qlike}). MAE = ${mae}, RMSE = ${rmse} cho sai số dự báo biến động trung bình (phần trăm). Hiệu ứng: QLIKE càng thấp ⇒ ước kỳ biến động đi kèm VaR/ES càng tin cậy ⇒ vị thế quản trị rủi ro dựa trên các ngưỡng này càng ổn định.`;
+  return `Mô hình ${best} được chọn vì có QLIKE ngoài mẫu thấp nhất (${qlike}). MAE = ${mae}, RMSE = ${rmse} cho sai số dự báo biến động trung bình (phần trăm). Hiệu ứng: QLIKE càng thấp ⇒ ước lượng biến động đi kèm VaR/ES càng tin cậy ⇒ vị thế quản trị rủi ro dựa trên các ngưỡng này càng ổn định.`;
 }
 function backtestExplainText(b) {
   const s95 = b.summary_95 || {}; const s99 = b.summary_99 || {};
-  return `Kỳ hạn kiểm tra ${s95.n ?? "—"} ngày; kỳ vọng vi phạm VaR 95% là 5%, thực tế ${fmtPct(Number((s95.breach_rate || 0)) * 100, 1)}% (${s95.breaches ?? "—"} lần). Kupiec p = ${s95.kupiec?.p_value == null ? "không đủ dữ liệu" : fmtNum(s95.kupiec.p_value, 3)}; Christoffersen p = ${s95.christoffersen?.p_value_conditional_coverage == null ? "không đủ dữ liệu" : fmtNum(s95.christoffersen.p_value_conditional_coverage, 3)}. Hiệu ứng: p-value nhỏ ⇒ mô hình vi phạm đều đặn (thiếu hoặc thừa rủi ro) ⇒ không nên lean vào ngưỡng này để đặt thế vị lớn.`;
+  return `Kỳ hạn kiểm tra ${s95.n ?? "—"} ngày; kỳ vọng vi phạm VaR 95% là 5%, thực tế ${fmtPct(Number((s95.breach_rate || 0)) * 100, 1)}% (${s95.breaches ?? "—"} lần). Kupiec p = ${s95.kupiec?.p_value == null ? "không đủ dữ liệu" : fmtNum(s95.kupiec.p_value, 3)}; Christoffersen p = ${s95.christoffersen?.p_value_conditional_coverage == null ? "không đủ dữ liệu" : fmtNum(s95.christoffersen.p_value_conditional_coverage, 3)}. Hiệu ứng: p-value nhỏ ⇒ mô hình vi phạm đều đặn (thiếu hoặc thừa rủi ro) ⇒ không nên dựa vào ngưỡng này để đặt vị thế lớn.`;
 }
 
 /* Forecast and risk */
@@ -409,8 +409,8 @@ async function loadPerformance() {
   setText("#models-explain-text", modelsExplainText(data));
   const list = $("#models-explain-list"); if (list) {
     list.innerHTML = [
-      `MAE (${fmtPct(Number(data.metrics?.[data.selected_model]?.mae_vol || 0) * 100, 2)}): sai số trung bình của dự báo biến động so với thực tế — càng thấp, dự báo dung sai số càng nhỏ.`,
-      `RMSE (${fmtPct(Number(data.metrics?.[data.selected_model]?.rmse_vol || 0) * 100, 2)}): penalize sai số lớn nặng hơn MAE — dùng để phát hiện mô hình hay bị lạc lệ khi biến động đột ngột.`,
+      `MAE (${fmtPct(Number(data.metrics?.[data.selected_model]?.mae_vol || 0) * 100, 2)}): sai số trung bình của dự báo biến động so với thực tế — càng thấp, dự báo càng sát thực tế.`,
+      `RMSE (${fmtPct(Number(data.metrics?.[data.selected_model]?.rmse_vol || 0) * 100, 2)}): phạt sai số lớn nặng hơn MAE — dùng để phát hiện mô hình hay bị lệch khi biến động đột ngột.`,
       `QLIKE (${fmtNum(data.metrics?.[data.selected_model]?.qlike || 0, 3)}): hàm mất mát phù hợp biến động, tiêu chí chọn mô hình chính của dashboard — mô hình có QLIKE ngoài mẫu thấp nhất được dùng cho VaR/ES.`,
     ].map((t) => `<li>${t}</li>`).join("");
   }
@@ -475,9 +475,9 @@ async function loadBacktest() {
   setText("#bt-explain-text", backtestExplainText(data));
   const list = $("#bt-explain-list"); if (list) {
     list.innerHTML = [
-      `Kupiec kiểm tra xem số lần vi phạm có khớp tỷ lệ kỳ muốn (5% hoặc 1%) hay không — p-value lớn có nghĩa mô hình chuẩn xác về tỉ lệ vi phạm.`,
-      `Christoffersen kiểm tra các vi phạm có liền tiếp nhau hay không — phân nhóm vi phạm có ý nghĩa rủi ro_cluster nhiều hơn vi phạm đơn lẻ.`,
-      `Nếu tỷ lệ vi phạm thực tế cao hơn kỳ vọng nhiều, ngưỡng VaR đang đánh giá thiếu rủi ro → cần nắm giữ bảo dậ lớn hơn hoặc giảm thế vị.`,
+      `Kupiec kiểm tra xem số lần vi phạm có khớp tỷ lệ kỳ vọng (5% hoặc 1%) hay không — p-value lớn có nghĩa mô hình chuẩn xác về tỉ lệ vi phạm.`,
+      `Christoffersen kiểm tra các vi phạm có liền tiếp nhau hay không — vi phạm dồn thành cụm có ý nghĩa rủi ro cao hơn vi phạm đơn lẻ.`,
+      `Nếu tỷ lệ vi phạm thực tế cao hơn kỳ vọng nhiều, ngưỡng VaR đang đánh giá thiếu rủi ro → cần nắm giữ tài sản bảo vệ lớn hơn hoặc giảm vị thế.`,
     ].map((t) => `<li>${t}</li>`).join("");
   }
   drawBacktest();
@@ -595,7 +595,7 @@ function bindEvents() {
     event.stopPropagation();
     const messages = {
       "help-price": "Giá thị trường thời gian thực từ Binance (miniTicker/WebSocket), cập nhật mỗi khi có tick mới. Chỉ số 24h so sánh giá hiện tại với giá mở 24 giờ trước; không dùng cho dự báo rủi ro.",
-      "help-fvol": "Biến động dự báo 1 ngày, được năm hoá bằng √365. Đo quy mô dao động kỳ vọng của giá, KHÔNG dự báo giá tăng hay giảm. Dùng để co giãn VaR/ES.",
+      "help-fvol": "Biến động dự báo 1 ngày, được năm hóa bằng √365. Đo quy mô dao động kỳ vọng của giá, KHÔNG dự báo giá tăng hay giảm. Dùng để co giãn VaR/ES.",
       "help-var": "VaR 95% = ngưỡng tổn thất (USD) trên vị thế tham chiếu mà mô hình ước tính có ~5% xác suất vượt qua trong 1 ngày. VaR không phải mức lỗ tối đa; ngày kích hoạt có thể vượt xa số này.",
       "help-regime": "Trạng thái biến động (Thấp/Bình thường/Cao/Stress) là phân vị của biến động dự báo so với toàn bộ thời gian huấn luyện. Phân vị cao ⇒ thị trường đang trong vùng stress ⇒ VaR/ES được co giãn lên cao hơn.",
       "help-models": "Hình 2 — Biến động thực tế (đỏ) vs 4 mô hình dự báo. MAE/RMSE đo sai số, QLIKE (Patton 2011) là tiêu chí chọn mô hình vì phạt mạnh khi dự báo thấp hơn thực tế. Diebold-Mariano kiểm tra chênh lệch có ý nghĩa thống kê (p<0.05). Kéo chuột để di chuyển, lăn chuột để zoom như chart chính.",

@@ -26,7 +26,7 @@ MODEL_LABELS = {
     "xgboost": "XGBoost",
 }
 MODEL_THEORY = {
-    "historical_22d": "Mô hình ngây thơ (naive benchmark): trung bình phương sai thực hiện 22 ngày. Không tham số; đại diện kỳ vọng ‘biến động sẽ giống trung bình tháng qua’. Dùng để kiểm tra mô hình phức tạp có thực sự hơn trung bình đơn giản hay không.",
+    "historical_22d": "Mốc so sánh đơn giản nhất (naïve benchmark): trung bình phương sai thực hiện 22 ngày. Không tham số; đại diện kỳ vọng ‘biến động sẽ giống trung bình tháng qua’. Dùng để kiểm tra mô hình phức tạp có thực sự hơn trung bình đơn giản hay không.",
     "garch_1_1": "GARCH(1,1)-t (Bollerslev 1986): σ²ₜ = ω + α·ε²ₜ₋₁ + β·σ²ₜ₋₁, phần dư Student-t. Nắm bắt cụm biến động và đuôi dày. Tham số α đo phản ứng cú sốc, β đo tính bền.",
     "har_rv": "HAR-RV (Corsi 2009): RVₜ₊₁ = β₀ + βᴅ·RVₜ + βᵂ·RV̄⁵ + βᴹ·RV̄²². Mô phỏng hành vi đa chân trời; chuẩn học thuật cho realized volatility.",
     "xgboost": "XGBoost (Chen & Guestrin 2016): cây tăng cường trên lag RV, lợi suất, biên độ, khối lượng, RV chéo. Bắt phi tuyến & tương tác; rủi ro overfit kiểm soát bằng đánh giá OOS nghiêm ngặt.",
@@ -106,10 +106,10 @@ def build_pdf(symbol: str, out_path: Path):
     pdf.set_font(FONT_FAMILY,"B",11); pdf.set_text_color(20,45,90); pdf.set_fill_color(235,240,248)
     pdf.cell(0,7," 1. Tổng quan dự báo biến động & trạng thái rủi ro", fill=True, new_x="LMARGIN", new_y="NEXT"); pdf.ln(2)
     regime = fc.get("regime",{})
-    mc(f"• Mô hình được chọn: {MODEL_LABELS.get(fc.get('selected_model'), fc.get('selected_model'))} (QLIKE OOS thấp nhất).\n• Biến động dự báo 1 ngày (năm hoá): {_fmt(fc.get('forecast_vol_annualized_pct'),2)}%  |  Thực tế gần nhất: {_fmt(fc.get('current_realized_vol_annualized_pct'),2)}%  |  Phân vị: {_fmt(regime.get('percentile_vs_train'),1)}% — Trạng thái: {regime.get('label_vi') or regime.get('label','-')}.\n• Giai đoạn huấn luyện: {fc.get('train_period',{}).get('start')} → {fc.get('train_period',{}).get('end')} (n={fc.get('train_period',{}).get('n_train')}); Test: {fc.get('test_period',{}).get('start')} → {fc.get('test_period',{}).get('end')} (n={fc.get('test_period',{}).get('n_test')}).\n• Biến động dự báo đo quy mô dao động kỳ vọng, KHÔNG dự báo hướng giá. Hiệu ứng: biến động cao ⇒ VaR/ES giãn ra ⇒ cần đệm vốn lớn hơn.", h=4.2, size=8)
+    mc(f"• Mô hình được chọn: {MODEL_LABELS.get(fc.get('selected_model'), fc.get('selected_model'))} (QLIKE OOS thấp nhất).\n• Biến động dự báo 1 ngày (năm hóa): {_fmt(fc.get('forecast_vol_annualized_pct'),2)}%  |  Thực tế gần nhất: {_fmt(fc.get('current_realized_vol_annualized_pct'),2)}%  |  Phân vị: {_fmt(regime.get('percentile_vs_train'),1)}% — Trạng thái: {regime.get('label_vi') or regime.get('label','-')}.\n• Giai đoạn huấn luyện: {fc.get('train_period',{}).get('start')} → {fc.get('train_period',{}).get('end')} (n={fc.get('train_period',{}).get('n_train')}); Test: {fc.get('test_period',{}).get('start')} → {fc.get('test_period',{}).get('end')} (n={fc.get('test_period',{}).get('n_test')}).\n• Biến động dự báo đo quy mô dao động kỳ vọng, KHÔNG dự báo hướng giá. Hiệu ứng: biến động cao ⇒ VaR/ES giãn ra ⇒ cần đệm vốn lớn hơn.", h=4.2, size=8)
     pdf.ln(2)
     pdf.set_font(FONT_FAMILY,"B",8)
-    pdf.cell(45,5,"Mô hình", border=1); pdf.cell(30,5,"Vol năm hoá (%)", border=1, align="C"); pdf.cell(40,5,"Lợi ích lý thuyết", border=1, align="C"); pdf.ln()
+    pdf.cell(45,5,"Mô hình", border=1); pdf.cell(30,5,"Vol năm hóa (%)", border=1, align="C"); pdf.cell(40,5,"Lợi ích lý thuyết", border=1, align="C"); pdf.ln()
     pdf.set_font(FONT_FAMILY,"",7.5)
     for k in ["historical_22d","garch_1_1","har_rv","xgboost"]:
         v = fc.get("models_vol_annualized_pct",{}).get(k)

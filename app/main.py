@@ -237,4 +237,12 @@ def admin_retrain(symbol: SymbolEnum = SymbolEnum.BTCUSDT):
 def index():
     return FileResponse(STATIC / "index.html")
 
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    """Serve the CRI brand icon for browsers that request /favicon.ico directly."""
+    ico = STATIC / "icons" / "favicon.ico"
+    if ico.exists():
+        return FileResponse(ico, media_type="image/x-icon")
+    return FileResponse(STATIC / "icons" / "favicon-32.png", media_type="image/png")
+
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
