@@ -80,11 +80,19 @@ def kupiec_test(breaches: int, n: int, alpha: float) -> dict:
             "verdict": "Không bác bỏ H0 (tần suất breach tương thích)" if pval > 0.05
                        else "Bác bỏ H0 (tần suất breach không tương thích)"}
 
+# Dưới ngưỡng này, bảng chuyển trạng thái gần như rỗng (n11 = 0) nên p-value luôn xấp xỉ 1
+# -> "không bác bỏ" là giả tạo, không phải bằng chứng mô hình tốt. Phải báo rõ là thiếu dữ liệu.
+MIN_BREACHES_INDEPENDENCE = 5
+
+
 def christoffersen_test(breach_indicator, alpha: float) -> dict:
     b = np.asarray(breach_indicator, int); n = len(b)
-    if n < 50 or b.sum() == 0:
+    k = int(b.sum())
+    if n < 50 or k < MIN_BREACHES_INDEPENDENCE:
         return {"test": "Christoffersen conditional coverage", "status": "insufficient_data",
-                "n": int(n), "breaches": int(b.sum()), "note": "Cần >=50 quan sát và ít nhất 1 breach"}
+                "n": int(n), "breaches": k, "required_breaches": MIN_BREACHES_INDEPENDENCE,
+                "note": (f"Không đủ dữ liệu: cần >=50 quan sát và >= {MIN_BREACHES_INDEPENDENCE} vi phạm "
+                         f"(hiện có {k}). Dưới ngưỡng này kiểm định độc lập không có lực thống kê.")}
     n00 = int(np.sum((b[:-1] == 0) & (b[1:] == 0))); n01 = int(np.sum((b[:-1] == 0) & (b[1:] == 1)))
     n10 = int(np.sum((b[:-1] == 1) & (b[1:] == 0))); n11 = int(np.sum((b[:-1] == 1) & (b[1:] == 1)))
     def _ll(n01_, n00_, n11_, n10_):

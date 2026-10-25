@@ -1,0 +1,1342 @@
+{
+  "method": "VaR forecast-based (mô hình được chọn bởi QLIKE) trên tập test out-of-sample",
+  "reference_position_usd": 10000.0,
+  "t_df_used": 2.5,
+  "t_df_note": "Bậc tự do t ước lượng CHỈ trên dữ liệu trước kỳ test (không rò rỉ).",
+  "series": [
+    {
+      "date": "2026-06-04",
+      "loss_usd": 340.0383141762464,
+      "var95_usd": 851.3487665029088,
+      "var99_usd": 1781.4601805061402,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.07441403576465197
+    },
+    {
+      "date": "2026-06-05",
+      "loss_usd": -79.3257312840856,
+      "var95_usd": 744.0494599033425,
+      "var99_usd": 1556.934757290655,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.06503530080551088
+    },
+    {
+      "date": "2026-06-06",
+      "loss_usd": -432.8578455484511,
+      "var95_usd": 713.7634675315976,
+      "var99_usd": 1493.5608598232275,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0623880861642346
+    },
+    {
+      "date": "2026-06-07",
+      "loss_usd": 292.31494578029316,
+      "var95_usd": 923.6862651816091,
+      "var99_usd": 1932.8274914413116,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.08073685600660023
+    },
+    {
+      "date": "2026-06-08",
+      "loss_usd": 160.27197668771254,
+      "var95_usd": 883.8673534094503,
+      "var99_usd": 1849.5058158317122,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.07725639530552418
+    },
+    {
+      "date": "2026-06-09",
+      "loss_usd": 508.3909180651536,
+      "var95_usd": 699.3234972266752,
+      "var99_usd": 1463.3450033868837,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0611259283870819
+    },
+    {
+      "date": "2026-06-10",
+      "loss_usd": 488.8195527821104,
+      "var95_usd": 600.892349523631,
+      "var99_usd": 1257.3763368969057,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.05252233461479322
+    },
+    {
+      "date": "2026-06-11",
+      "loss_usd": -497.53963914707543,
+      "var95_usd": 795.6771334810761,
+      "var99_usd": 1664.9664457239373,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.06954793264244927
+    },
+    {
+      "date": "2026-06-12",
+      "loss_usd": 203.12500000000065,
+      "var95_usd": 556.6438543866999,
+      "var99_usd": 1164.7856910473083,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04865469631048568
+    },
+    {
+      "date": "2026-06-13",
+      "loss_usd": 53.1632110579483,
+      "var95_usd": 629.6338437903293,
+      "var99_usd": 1317.5183487009406,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.05503454895801365
+    },
+    {
+      "date": "2026-06-14",
+      "loss_usd": -208.4446819882424,
+      "var95_usd": 528.861297307285,
+      "var99_usd": 1106.6502698227948,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0462263000086582
+    },
+    {
+      "date": "2026-06-15",
+      "loss_usd": -1183.2460732984296,
+      "var95_usd": 533.9441868800869,
+      "var99_usd": 1117.2862931919856,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0466705812965867
+    },
+    {
+      "date": "2026-06-16",
+      "loss_usd": -145.13108614232272,
+      "var95_usd": 1583.5583735584974,
+      "var99_usd": 3313.6198664967374,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.13841444785248716
+    },
+    {
+      "date": "2026-06-17",
+      "loss_usd": -410.70604522381205,
+      "var95_usd": 713.6018200905152,
+      "var99_usd": 1493.222610105956,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.062373957009491846
+    },
+    {
+      "date": "2026-06-18",
+      "loss_usd": -394.5035460992896,
+      "var95_usd": 801.9616819680649,
+      "var99_usd": 1678.1169585601974,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.07009724760510139
+    },
+    {
+      "date": "2026-06-19",
+      "loss_usd": 690.8315565031975,
+      "var95_usd": 706.273671774397,
+      "var99_usd": 1477.8883488305999,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.06173342387860555
+    },
+    {
+      "date": "2026-06-20",
+      "loss_usd": 96.19789280806201,
+      "var95_usd": 628.9402379631289,
+      "var99_usd": 1316.0669680086303,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.05497392279531434
+    },
+    {
+      "date": "2026-06-21",
+      "loss_usd": 296.0222016651259,
+      "var95_usd": 529.6662396596715,
+      "var99_usd": 1108.334623879323,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04629665778840224
+    },
+    {
+      "date": "2026-06-22",
+      "loss_usd": 328.88465204957026,
+      "var95_usd": 554.6801033233834,
+      "var99_usd": 1160.6765122226357,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.048483050273505135
+    },
+    {
+      "date": "2026-06-23",
+      "loss_usd": 379.4972893050752,
+      "var95_usd": 494.25275333950634,
+      "var99_usd": 1034.231367711561,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04320126311436674
+    },
+    {
+      "date": "2026-06-24",
+      "loss_usd": 496.92622950819776,
+      "var95_usd": 481.2208298782581,
+      "var99_usd": 1006.9618706087681,
+      "breach95": true,
+      "breach99": false,
+      "forecast_vol_daily": 0.04206217880875247
+    },
+    {
+      "date": "2026-06-25",
+      "loss_usd": 355.7951482479782,
+      "var95_usd": 470.70812965961653,
+      "var99_usd": 984.9638862738202,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0411432928235569
+    },
+    {
+      "date": "2026-06-26",
+      "loss_usd": 55.897149245388576,
+      "var95_usd": 480.8126719303003,
+      "var99_usd": 1006.1077939245079,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04202650285392409
+    },
+    {
+      "date": "2026-06-27",
+      "loss_usd": 219.22428330522825,
+      "var95_usd": 557.7440795814366,
+      "var99_usd": 1167.087928921058,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04875086394496364
+    },
+    {
+      "date": "2026-06-28",
+      "loss_usd": 57.47126436781657,
+      "var95_usd": 525.960628822453,
+      "var99_usd": 1100.5805771117764,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.045972760616972294
+    },
+    {
+      "date": "2026-06-29",
+      "loss_usd": -121.38728323699554,
+      "var95_usd": 412.2500342024261,
+      "var99_usd": 862.6394366678246,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.036033632743876796
+    },
+    {
+      "date": "2026-06-30",
+      "loss_usd": -805.2541404911473,
+      "var95_usd": 422.68885400561317,
+      "var99_usd": 884.4828251151293,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03694606104675197
+    },
+    {
+      "date": "2026-07-01",
+      "loss_usd": -438.6892177589852,
+      "var95_usd": 544.1756365471817,
+      "var99_usd": 1138.6957564906204,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.047564883950690355
+    },
+    {
+      "date": "2026-07-02",
+      "loss_usd": -91.13924050632826,
+      "var95_usd": 660.6633494626808,
+      "var99_usd": 1382.4480590042149,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.05774675203589753
+    },
+    {
+      "date": "2026-07-03",
+      "loss_usd": -240.8429503261411,
+      "var95_usd": 606.8749804187219,
+      "var99_usd": 1269.8950826020875,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0530452597976448
+    },
+    {
+      "date": "2026-07-04",
+      "loss_usd": -127.38853503184711,
+      "var95_usd": 573.5563725288092,
+      "var99_usd": 1200.1753912591457,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.050132972640252293
+    },
+    {
+      "date": "2026-07-05",
+      "loss_usd": 159.65166908563089,
+      "var95_usd": 740.0825171233262,
+      "var99_usd": 1548.6338694771046,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.06468856133336595
+    },
+    {
+      "date": "2026-07-06",
+      "loss_usd": 162.24188790560424,
+      "var95_usd": 400.1831727616003,
+      "var99_usd": 837.3893464506061,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.034978901834342276
+    },
+    {
+      "date": "2026-07-07",
+      "loss_usd": 564.7176411794109,
+      "var95_usd": 587.6450949061638,
+      "var99_usd": 1229.6562560903242,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.05136442880970588
+    },
+    {
+      "date": "2026-07-08",
+      "loss_usd": 397.24576271186527,
+      "var95_usd": 452.2502310771364,
+      "var99_usd": 946.3404540985689,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03952993907324956
+    },
+    {
+      "date": "2026-07-09",
+      "loss_usd": -281.30170987314074,
+      "var95_usd": 438.87523056264774,
+      "var99_usd": 918.3530630688207,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.038360867353411696
+    },
+    {
+      "date": "2026-07-10",
+      "loss_usd": -230.6866952789699,
+      "var95_usd": 504.76607381023905,
+      "var99_usd": 1056.2306499333984,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04412020331407828
+    },
+    {
+      "date": "2026-07-11",
+      "loss_usd": 220.2412165705303,
+      "var95_usd": 349.7111040178327,
+      "var99_usd": 731.7757786244251,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.030567278212636044
+    },
+    {
+      "date": "2026-07-12",
+      "loss_usd": -0.0,
+      "var95_usd": 354.12497329451696,
+      "var99_usd": 741.0118668972394,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.030953082290986766
+    },
+    {
+      "date": "2026-07-13",
+      "loss_usd": 305.63002680965235,
+      "var95_usd": 364.18176541205526,
+      "var99_usd": 762.055856629691,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03183211861282962
+    },
+    {
+      "date": "2026-07-14",
+      "loss_usd": -204.64601769911494,
+      "var95_usd": 392.996667295811,
+      "var99_usd": 822.3514749835665,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03435074931237314
+    },
+    {
+      "date": "2026-07-15",
+      "loss_usd": -211.38211382113914,
+      "var95_usd": 408.7289493262593,
+      "var99_usd": 855.27151326689,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0357258644752015
+    },
+    {
+      "date": "2026-07-16",
+      "loss_usd": 169.8513800424628,
+      "var95_usd": 419.47456443105733,
+      "var99_usd": 877.7568755266799,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03666510890496235
+    },
+    {
+      "date": "2026-07-17",
+      "loss_usd": -16.198704103671524,
+      "var95_usd": 412.42246752473045,
+      "var99_usd": 863.0002560048156,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.036048704662599
+    },
+    {
+      "date": "2026-07-18",
+      "loss_usd": -129.38005390835673,
+      "var95_usd": 399.73051245629006,
+      "var99_usd": 836.4421479099676,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.034939336051817024
+    },
+    {
+      "date": "2026-07-19",
+      "loss_usd": -15.965939329429801,
+      "var95_usd": 336.02190042104354,
+      "var99_usd": 703.1309128889696,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.029370742872336594
+    },
+    {
+      "date": "2026-07-20",
+      "loss_usd": -21.25398512220933,
+      "var95_usd": 425.7945620012964,
+      "var99_usd": 890.9815661062228,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0372175223737175
+    },
+    {
+      "date": "2026-07-21",
+      "loss_usd": -190.88016967126364,
+      "var95_usd": 346.3849970317864,
+      "var99_usd": 724.8158494098866,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.030276552420862822
+    },
+    {
+      "date": "2026-07-22",
+      "loss_usd": 239.3340270551525,
+      "var95_usd": 402.9992663371605,
+      "var99_usd": 843.2820648837896,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03522504876764805
+    },
+    {
+      "date": "2026-07-23",
+      "loss_usd": 282.515991471215,
+      "var95_usd": 368.585597589341,
+      "var99_usd": 771.2709421200852,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.032217045376144476
+    },
+    {
+      "date": "2026-07-24",
+      "loss_usd": 241.3603949533727,
+      "var95_usd": 430.27344885664695,
+      "var99_usd": 900.3537046465468,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.037609009458392496
+    },
+    {
+      "date": "2026-07-25",
+      "loss_usd": -11.242270938729426,
+      "var95_usd": 334.18177482926643,
+      "var99_usd": 699.2804222347731,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.029209902595136894
+    },
+    {
+      "date": "2026-07-26",
+      "loss_usd": -252.66704098820813,
+      "var95_usd": 256.72857665303695,
+      "var99_usd": 537.2084326662863,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.022439933240687934
+    },
+    {
+      "date": "2026-07-27",
+      "loss_usd": 580.503833515883,
+      "var95_usd": 328.4187090160573,
+      "var99_usd": 687.2211197869165,
+      "breach95": true,
+      "breach99": false,
+      "forecast_vol_daily": 0.028706168987464222
+    },
+    {
+      "date": "2026-07-28",
+      "loss_usd": -122.09302325581595,
+      "var95_usd": 389.329967045499,
+      "var99_usd": 814.678849208099,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03403025320748562
+    },
+    {
+      "date": "2026-07-29",
+      "loss_usd": 120.62033314187315,
+      "var95_usd": 346.50815258693956,
+      "var99_usd": 725.0735542732116,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03028731710655495
+    },
+    {
+      "date": "2026-07-30",
+      "loss_usd": 5.813953488371659,
+      "var95_usd": 281.8987359217281,
+      "var99_usd": 589.8773719288155,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.02463998709137495
+    },
+    {
+      "date": "2026-07-31",
+      "loss_usd": -17.452006980802626,
+      "var95_usd": 236.47589900375414,
+      "var99_usd": 494.82939812674334,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.02066970282722958
+    },
+    {
+      "date": "2026-08-01",
+      "loss_usd": 75.4936120789773,
+      "var95_usd": 295.0250747243699,
+      "var99_usd": 617.3444345626099,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.025787323980263704
+    },
+    {
+      "date": "2026-08-02",
+      "loss_usd": -193.09537741369232,
+      "var95_usd": 262.783198230574,
+      "var99_usd": 549.8778199641871,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.022969150929535942
+    },
+    {
+      "date": "2026-08-03",
+      "loss_usd": 166.4753157290466,
+      "var95_usd": 307.08971785145,
+      "var99_usd": 642.5898829247376,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.026841860993142827
+    },
+    {
+      "date": "2026-08-04",
+      "loss_usd": 157.61821366024554,
+      "var95_usd": 286.3316461846584,
+      "var99_usd": 599.1533037535669,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.025027455489552347
+    },
+    {
+      "date": "2026-08-05",
+      "loss_usd": 213.52313167259717,
+      "var95_usd": 284.8478344198101,
+      "var99_usd": 596.0484051756295,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.02489775961627237
+    },
+    {
+      "date": "2026-08-06",
+      "loss_usd": 218.18181818181958,
+      "var95_usd": 346.2930099827696,
+      "var99_usd": 724.6233651174401,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03026851208789384
+    },
+    {
+      "date": "2026-08-07",
+      "loss_usd": -0.0,
+      "var95_usd": 431.9724248490746,
+      "var99_usd": 903.9088376275677,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03775751224037587
+    },
+    {
+      "date": "2026-08-08",
+      "loss_usd": -198.265179677819,
+      "var95_usd": 284.89014737113683,
+      "var99_usd": 596.1369456667585,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0249014580740575
+    },
+    {
+      "date": "2026-08-09",
+      "loss_usd": 115.4313487241787,
+      "var95_usd": 320.9358258594338,
+      "var99_usd": 671.5630735156304,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.02805211091309008
+    },
+    {
+      "date": "2026-08-10",
+      "loss_usd": 79.90165949600669,
+      "var95_usd": 362.96006958608734,
+      "var99_usd": 759.4994396214272,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03172533356718899
+    },
+    {
+      "date": "2026-08-11",
+      "loss_usd": -43.37050805452325,
+      "var95_usd": 292.47628440981174,
+      "var99_usd": 612.0110522491586,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.02556454128404483
+    },
+    {
+      "date": "2026-08-12",
+      "loss_usd": 160.3948180135717,
+      "var95_usd": 337.57938734791463,
+      "var99_usd": 706.3899778586377,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.02950687848730347
+    },
+    {
+      "date": "2026-08-13",
+      "loss_usd": -6.269592476488839,
+      "var95_usd": 379.5466353516238,
+      "var99_usd": 794.207079551447,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.033175119303250386
+    },
+    {
+      "date": "2026-08-14",
+      "loss_usd": 93.98496240601517,
+      "var95_usd": 371.0348527443178,
+      "var99_usd": 776.3960456054801,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03243112797997307
+    },
+    {
+      "date": "2026-08-15",
+      "loss_usd": -0.0,
+      "var95_usd": 357.2265879873511,
+      "var99_usd": 747.502042590162,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03122418583369677
+    },
+    {
+      "date": "2026-08-16",
+      "loss_usd": 113.85199240986688,
+      "var95_usd": 269.2414893733756,
+      "var99_usd": 563.3918919376234,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.023533652256122795
+    },
+    {
+      "date": "2026-08-17",
+      "loss_usd": -121.56110044785784,
+      "var95_usd": 341.1409216402923,
+      "var99_usd": 713.8425422752636,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.029818182327325086
+    },
+    {
+      "date": "2026-08-18",
+      "loss_usd": 208.59671302149164,
+      "var95_usd": 363.2365721907803,
+      "var99_usd": 760.0780255070802,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03174950189340758
+    },
+    {
+      "date": "2026-08-19",
+      "loss_usd": -994.1897998708837,
+      "var95_usd": 428.7094122820535,
+      "var99_usd": 897.0809344398799,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03747230135687366
+    },
+    {
+      "date": "2026-08-20",
+      "loss_usd": -669.4069289489124,
+      "var95_usd": 488.58061043253764,
+      "var99_usd": 1022.3623228212841,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.042705476825892756
+    },
+    {
+      "date": "2026-08-21",
+      "loss_usd": -1106.2190423775453,
+      "var95_usd": 434.7530095261241,
+      "var99_usd": 909.7272531531303,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03800055543929252
+    },
+    {
+      "date": "2026-08-22",
+      "loss_usd": 307.23488602576896,
+      "var95_usd": 750.8046382858745,
+      "var99_usd": 1571.070070307116,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0656257522227593
+    },
+    {
+      "date": "2026-08-23",
+      "loss_usd": -209.61145194273945,
+      "var95_usd": 791.7922108442374,
+      "var99_usd": 1656.8371863014988,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0692083623236619
+    },
+    {
+      "date": "2026-08-24",
+      "loss_usd": 295.4431647471201,
+      "var95_usd": 573.6990168584721,
+      "var99_usd": 1200.4738766781275,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.05014544078570196
+    },
+    {
+      "date": "2026-08-25",
+      "loss_usd": 588.2352941176472,
+      "var95_usd": 516.6809426691431,
+      "var99_usd": 1081.1626933722816,
+      "breach95": true,
+      "breach99": false,
+      "forecast_vol_daily": 0.045161648973346284
+    },
+    {
+      "date": "2026-08-26",
+      "loss_usd": -158.9912280701755,
+      "var95_usd": 543.5038604006331,
+      "var99_usd": 1137.290054735503,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04750616585986555
+    },
+    {
+      "date": "2026-08-27",
+      "loss_usd": -107.93308148947744,
+      "var95_usd": 478.48470781221545,
+      "var99_usd": 1001.2364937697538,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0418230219634148
+    },
+    {
+      "date": "2026-08-28",
+      "loss_usd": 416.4442071542984,
+      "var95_usd": 447.9001752336618,
+      "var99_usd": 937.2378964006696,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03914971275020661
+    },
+    {
+      "date": "2026-08-29",
+      "loss_usd": -16.713091922004875,
+      "var95_usd": 413.14335806287824,
+      "var99_usd": 864.5087303677833,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03611171570624975
+    },
+    {
+      "date": "2026-08-30",
+      "loss_usd": 289.21023359288034,
+      "var95_usd": 322.98619499923365,
+      "var99_usd": 675.8535019764552,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.02823132799603312
+    },
+    {
+      "date": "2026-08-31",
+      "loss_usd": -154.6391752577314,
+      "var95_usd": 411.30990128447996,
+      "var99_usd": 860.6721943065257,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.035951458331541716
+    },
+    {
+      "date": "2026-09-01",
+      "loss_usd": 84.60236886632887,
+      "var95_usd": 395.177607754448,
+      "var99_usd": 826.9151259054751,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03454137927235563
+    },
+    {
+      "date": "2026-09-02",
+      "loss_usd": 11.376564277588708,
+      "var95_usd": 396.94975271251496,
+      "var99_usd": 830.6233660546316,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03469627755080317
+    },
+    {
+      "date": "2026-09-03",
+      "loss_usd": -506.8337129840539,
+      "var95_usd": 469.8087165698013,
+      "var99_usd": 983.0818507692486,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.041064677618524496
+    },
+    {
+      "date": "2026-09-04",
+      "loss_usd": 271.00271002710065,
+      "var95_usd": 363.7648839317019,
+      "var99_usd": 761.1835258218476,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.031795680158215926
+    },
+    {
+      "date": "2026-09-05",
+      "loss_usd": -245.12534818941668,
+      "var95_usd": 439.7373351821219,
+      "var99_usd": 920.1570300344771,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.038436221528469636
+    },
+    {
+      "date": "2026-09-06",
+      "loss_usd": -206.6340402392597,
+      "var95_usd": 350.77018287717624,
+      "var99_usd": 733.9919171685453,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.030659849359993788
+    },
+    {
+      "date": "2026-09-07",
+      "loss_usd": -319.6590303676072,
+      "var95_usd": 348.52141584206277,
+      "var99_usd": 729.2863381086904,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.0304632908669749
+    },
+    {
+      "date": "2026-09-08",
+      "loss_usd": 309.7573567372225,
+      "var95_usd": 436.58467768173244,
+      "var99_usd": 913.5600464941261,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03816065647544049
+    },
+    {
+      "date": "2026-09-09",
+      "loss_usd": 346.2972828982425,
+      "var95_usd": 476.5496196248695,
+      "var99_usd": 997.1872924469104,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04165388126897013
+    },
+    {
+      "date": "2026-09-10",
+      "loss_usd": 364.23841059602614,
+      "var95_usd": 497.4814374145628,
+      "var99_usd": 1040.9874380101933,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.043483473439543965
+    },
+    {
+      "date": "2026-09-11",
+      "loss_usd": -211.912943871706,
+      "var95_usd": 451.81299712475123,
+      "var99_usd": 945.4255354349299,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03949172166547206
+    },
+    {
+      "date": "2026-09-12",
+      "loss_usd": -95.34492428491248,
+      "var95_usd": 403.38676111895035,
+      "var99_usd": 844.0929035800715,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.035258918612399416
+    },
+    {
+      "date": "2026-09-13",
+      "loss_usd": 155.55555555555546,
+      "var95_usd": 283.01966736615276,
+      "var99_usd": 592.2229379434611,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.024737964601740974
+    },
+    {
+      "date": "2026-09-14",
+      "loss_usd": -812.6410835214438,
+      "var95_usd": 342.3630391815152,
+      "var99_usd": 716.3998417290819,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.02992500423392717
+    },
+    {
+      "date": "2026-09-15",
+      "loss_usd": 808.9770354906045,
+      "var95_usd": 512.3860162519212,
+      "var99_usd": 1072.175494833293,
+      "breach95": true,
+      "breach99": false,
+      "forecast_vol_daily": 0.044786241360634825
+    },
+    {
+      "date": "2026-09-16",
+      "loss_usd": -442.9301533219765,
+      "var95_usd": 680.3903573478012,
+      "var99_usd": 1423.7271216053498,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.05947103511241257
+    },
+    {
+      "date": "2026-09-17",
+      "loss_usd": 27.1886895051654,
+      "var95_usd": 515.3161192407534,
+      "var99_usd": 1078.3067796894727,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04504235354072375
+    },
+    {
+      "date": "2026-09-18",
+      "loss_usd": -528.8985823336967,
+      "var95_usd": 358.0336271365425,
+      "var99_usd": 749.1907842257431,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03129472688863726
+    },
+    {
+      "date": "2026-09-19",
+      "loss_usd": -160.5385810460902,
+      "var95_usd": 506.5778714947634,
+      "var99_usd": 1060.0218640128778,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.044278567527429195
+    },
+    {
+      "date": "2026-09-20",
+      "loss_usd": -50.96839959225052,
+      "var95_usd": 497.0464519445803,
+      "var99_usd": 1040.0772243300166,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04344545256538056
+    },
+    {
+      "date": "2026-09-21",
+      "loss_usd": -927.9918864097358,
+      "var95_usd": 433.1821913602523,
+      "var99_usd": 906.4402923640624,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03786325457767842
+    },
+    {
+      "date": "2026-09-22",
+      "loss_usd": -32.48259860788805,
+      "var95_usd": 599.8052447576495,
+      "var99_usd": 1255.1015537189262,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.052427313800623286
+    },
+    {
+      "date": "2026-09-23",
+      "loss_usd": 652.1739130434778,
+      "var95_usd": 546.8105596904294,
+      "var99_usd": 1144.2093730518698,
+      "breach95": true,
+      "breach99": false,
+      "forecast_vol_daily": 0.04779519527870714
+    },
+    {
+      "date": "2026-09-24",
+      "loss_usd": -771.895101434934,
+      "var95_usd": 566.3163297740656,
+      "var99_usd": 1185.025492204592,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04950014057225956
+    },
+    {
+      "date": "2026-09-25",
+      "loss_usd": -124.0238860817633,
+      "var95_usd": 560.1548204042608,
+      "var99_usd": 1172.1324405834441,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.048961580117779444
+    },
+    {
+      "date": "2026-09-26",
+      "loss_usd": 176.95099818511918,
+      "var95_usd": 539.8799413789792,
+      "var99_usd": 1129.7069493285685,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.04718940914358664
+    },
+    {
+      "date": "2026-09-27",
+      "loss_usd": 32.332563510393264,
+      "var95_usd": 369.5760769181737,
+      "var99_usd": 773.3435351082423,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03230362042869629
+    },
+    {
+      "date": "2026-09-28",
+      "loss_usd": -773.8646895273415,
+      "var95_usd": 411.46035885324255,
+      "var99_usd": 860.9870290465905,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.035964609410563016
+    },
+    {
+      "date": "2026-09-29",
+      "loss_usd": 438.7096774193555,
+      "var95_usd": 659.4157546267704,
+      "var99_usd": 1379.8374479256213,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.05763770322958917
+    },
+    {
+      "date": "2026-09-30",
+      "loss_usd": -179.93702204228467,
+      "var95_usd": 626.9630987568139,
+      "var99_usd": 1311.9297742920812,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.05480110653786585
+    },
+    {
+      "date": "2026-10-01",
+      "loss_usd": 318.16173221387635,
+      "var95_usd": 706.3113918650462,
+      "var99_usd": 1477.9672786912404,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.06173672088717014
+    },
+    {
+      "date": "2026-10-02",
+      "loss_usd": 164.30853491556374,
+      "var95_usd": 530.4463540552613,
+      "var99_usd": 1109.967025060441,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.046364845425265075
+    },
+    {
+      "date": "2026-10-03",
+      "loss_usd": -27.842227378189754,
+      "var95_usd": 552.4720336777393,
+      "var99_usd": 1156.0560930662689,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.048290049026487716
+    },
+    {
+      "date": "2026-10-04",
+      "loss_usd": -370.19898195280064,
+      "var95_usd": 291.26622857944324,
+      "var99_usd": 609.4789921078777,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.025458773658153806
+    },
+    {
+      "date": "2026-10-05",
+      "loss_usd": 383.7572512271303,
+      "var95_usd": 395.47874793578416,
+      "var99_usd": 827.5452662931854,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03456770110085392
+    },
+    {
+      "date": "2026-10-06",
+      "loss_usd": 157.77262180974415,
+      "var95_usd": 453.88813824003336,
+      "var99_usd": 949.7677996294169,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03967310399812478
+    },
+    {
+      "date": "2026-10-07",
+      "loss_usd": 546.9118340405465,
+      "var95_usd": 352.70156614642536,
+      "var99_usd": 738.033365894191,
+      "breach95": true,
+      "breach99": false,
+      "forecast_vol_daily": 0.030828666217817546
+    },
+    {
+      "date": "2026-10-08",
+      "loss_usd": 418.95261845386614,
+      "var95_usd": 421.7800188281331,
+      "var99_usd": 882.5810737494998,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03686662228315456
+    },
+    {
+      "date": "2026-10-09",
+      "loss_usd": -140.5517959396163,
+      "var95_usd": 439.2885280087628,
+      "var99_usd": 919.21789423077,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03839699253752746
+    },
+    {
+      "date": "2026-10-10",
+      "loss_usd": -97.53593429158158,
+      "var95_usd": 345.656871545624,
+      "var99_usd": 723.2922358086852,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.030212908990461196
+    },
+    {
+      "date": "2026-10-11",
+      "loss_usd": -320.2846975088969,
+      "var95_usd": 334.8125998642959,
+      "var99_usd": 700.6004331691727,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.029265041262819168
+    },
+    {
+      "date": "2026-10-12",
+      "loss_usd": 615.7635467980305,
+      "var95_usd": 417.222294907198,
+      "var99_usd": 873.0439674561079,
+      "breach95": true,
+      "breach99": false,
+      "forecast_vol_daily": 0.03646824426911098
+    },
+    {
+      "date": "2026-10-13",
+      "loss_usd": 5.249343832020026,
+      "var95_usd": 517.8524157158074,
+      "var99_usd": 1083.614018454646,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.045264044185064134
+    },
+    {
+      "date": "2026-10-14",
+      "loss_usd": 414.9159663865554,
+      "var95_usd": 453.9007996143309,
+      "var99_usd": 949.7942937467856,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03967421069375514
+    },
+    {
+      "date": "2026-10-15",
+      "loss_usd": -32.87671232876876,
+      "var95_usd": 393.84554702375897,
+      "var99_usd": 824.1277686635234,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03442494753632181
+    },
+    {
+      "date": "2026-10-16",
+      "loss_usd": 87.38394320043751,
+      "var95_usd": 386.84155830309675,
+      "var99_usd": 809.4718162483609,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03381274829711284
+    },
+    {
+      "date": "2026-10-17",
+      "loss_usd": 242.42424242424175,
+      "var95_usd": 381.5963411282115,
+      "var99_usd": 798.4961199147093,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03335427840345388
+    },
+    {
+      "date": "2026-10-18",
+      "loss_usd": -45.17221908526325,
+      "var95_usd": 469.7067975011726,
+      "var99_usd": 982.8685835754261,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.041055769155252525
+    },
+    {
+      "date": "2026-10-19",
+      "loss_usd": 11.242270938729426,
+      "var95_usd": 370.7511764221485,
+      "var99_usd": 775.8024486074215,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03240633261899522
+    },
+    {
+      "date": "2026-10-20",
+      "loss_usd": -247.60832864378247,
+      "var95_usd": 415.67447995664986,
+      "var99_usd": 869.8051412432974,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.036332954054784046
+    },
+    {
+      "date": "2026-10-21",
+      "loss_usd": -93.35529928610642,
+      "var95_usd": 309.7475419836985,
+      "var99_usd": 648.1514201521164,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.027074174033127268
+    },
+    {
+      "date": "2026-10-22",
+      "loss_usd": 457.0184983677905,
+      "var95_usd": 357.0063225415273,
+      "var99_usd": 747.0411338106868,
+      "breach95": true,
+      "breach99": false,
+      "forecast_vol_daily": 0.03120493304164707
+    },
+    {
+      "date": "2026-10-23",
+      "loss_usd": 114.02508551881408,
+      "var95_usd": 445.70967324460827,
+      "var99_usd": 932.6542378316348,
+      "breach95": false,
+      "breach99": false,
+      "forecast_vol_daily": 0.03895824704335472
+    }
+  ],
+  "summary_95": {
+    "n": 142,
+    "breaches": 8,
+    "breach_rate": 0.056338028169014086,
+    "quantile_loss": 32.014360410380114,
+    "kupiec": {
+      "test": "Kupiec unconditional coverage",
+      "status": "ok",
+      "n": 142,
+      "breaches": 8,
+      "expected_breaches": 7.100000000000007,
+      "lr_statistic": 0.11556596769095506,
+      "p_value": 0.7338942205202013,
+      "verdict": "Không bác bỏ H0 (tần suất breach tương thích)"
+    },
+    "christoffersen": {
+      "test": "Christoffersen conditional coverage",
+      "status": "ok",
+      "n": 142,
+      "breaches": 8,
+      "transitions": {
+        "n00": 125,
+        "n01": 8,
+        "n10": 8,
+        "n11": 0
+      },
+      "lr_independence": 0.9629871982457274,
+      "p_value_independence": 0.32643540114875724,
+      "lr_conditional_coverage": 1.0785531659366825,
+      "p_value_conditional_coverage": 0.583169974907166,
+      "verdict": "Không bác bỏ H0"
+    }
+  },
+  "summary_99": {
+    "n": 142,
+    "breaches": 0,
+    "breach_rate": 0.0,
+    "kupiec": {
+      "test": "Kupiec unconditional coverage",
+      "status": "ok",
+      "n": 142,
+      "breaches": 0,
+      "expected_breaches": 1.4200000000000013,
+      "lr_statistic": 2.854295382394412,
+      "p_value": 0.09113016123181639,
+      "verdict": "Không bác bỏ H0 (tần suất breach tương thích)"
+    },
+    "christoffersen": {
+      "test": "Christoffersen conditional coverage",
+      "status": "insufficient_data",
+      "n": 142,
+      "breaches": 0,
+      "required_breaches": 5,
+      "note": "Không đủ dữ liệu: cần >=50 quan sát và >= 5 vi phạm (hiện có 0). Dưới ngưỡng này kiểm định độc lập không có lực thống kê."
+    }
+  }
+}

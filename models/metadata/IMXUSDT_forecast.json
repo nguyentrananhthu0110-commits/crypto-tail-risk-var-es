@@ -1,0 +1,150 @@
+{
+  "symbol": "IMXUSDT",
+  "status": "ready",
+  "generated_at_utc": "2026-10-24T12:12:28.163499+00:00",
+  "model_version": "1.0.0",
+  "feature_version": "1.0.0",
+  "train_period": {
+    "start": "2024-11-15",
+    "end": "2026-06-02",
+    "n_train": 565
+  },
+  "test_period": {
+    "start": "2026-06-04",
+    "end": "2026-10-23",
+    "n_test": 142
+  },
+  "last_closed_day": "2026-10-23",
+  "horizon_days": 1,
+  "selected_model": "xgboost",
+  "forecast_vol_daily": 0.043890936225314446,
+  "forecast_vol_annualized_pct": 83.85351591902013,
+  "forecast_vol_7d": 0.11612450206197804,
+  "forecast_7d_note": "vol 1 ngày x sqrt(7) (giả định độc lập, chỉ để tham chiếu quy mô)",
+  "models_vol_daily": {
+    "historical_22d": 0.054577631414873186,
+    "har_rv": 0.0545074602701877,
+    "xgboost": 0.043890936225314446,
+    "garch_1_1": 0.04473860542308866
+  },
+  "models_vol_annualized_pct": {
+    "historical_22d": 104.27041841112366,
+    "har_rv": 104.13635662743934,
+    "xgboost": 83.85351591902013,
+    "garch_1_1": 85.47298564745638
+  },
+  "current_realized_vol_daily": 0.039737537358732686,
+  "current_realized_vol_annualized_pct": 75.91845852609804,
+  "regime": {
+    "regime": "normal",
+    "label_vi": "Bình thường",
+    "description": "Biến động nằm trong vùng thường gặp trong lịch sử tham chiếu.",
+    "percentile_vs_train": 38.230088495575224,
+    "thresholds": {
+      "q25": 0.03776537177290763,
+      "q75": 0.061465286332474646,
+      "q90": 0.07835413248335103,
+      "rule": "Low<q25 | Normal q25-q75 | Elevated q75-q90 | High/Stress>q90 (phân vị realized vol tập train)"
+    }
+  },
+  "risk": {
+    "reference_position_usd": 10000.0,
+    "horizon_days": 1,
+    "selected_model": "xgboost",
+    "selection_rule": "QLIKE out-of-sample thấp nhất trên tập test theo thứ tự thời gian",
+    "nu_policy": "Thống nhất dùng ν Student-t ước lượng CHỈ trên giai đoạn train (t_df_train_only) cho toàn bộ hệ thống (cả dự báo VaR/ES lẫn mọi kiểm định OOS); t_df_live toàn mẫu chỉ lưu để đối chiếu.",
+    "t_df_used": 6.165638668625576,
+    "t_df_live": 5.478203791839352,
+    "t_df_train_only": 6.165638668625576,
+    "t_df_full_sample_reference": 5.478203791839352,
+    "t_df_reference_note": "t_df_train_only dùng thống nhất trên mọi tab và mọi kiểm định OOS; t_df_live toàn mẫu chỉ giữ để đối chiếu mức lệch rò rỉ trong backtest_nu.csv.",
+    "forecast_based": {
+      "method": "forecast_vol_student_t",
+      "t_df": 6.165638668625576,
+      "sigma_daily": 0.043890936225314446,
+      "horizon_days": 1,
+      "assumption": "Lợi suất kỳ tới = sigma_dự_báo x epsilon, epsilon ~ Student-t chuẩn hoá (phương sai 1). Mu=0.",
+      "var_95": 697.6765616753214,
+      "es_95": 968.6111150972979,
+      "var_99": 1123.6439707076913,
+      "es_99": 1441.365738694817,
+      "var_95_pct": 6.976765616753214,
+      "es_95_pct": 9.686111150972978,
+      "var_99_pct": 11.236439707076913,
+      "es_99_pct": 14.41365738694817
+    },
+    "historical_simulation": {
+      "method": "historical_simulation",
+      "n_obs": 250,
+      "assumption": "Phân phối thực nghiệm của lợi suất quá khứ đại diện cho kỳ tới",
+      "var_95": 567.7602629536462,
+      "es_95": 748.4148200199145,
+      "var_99": 853.8634570923433,
+      "es_99": 893.1673736785043,
+      "var_95_pct": 5.677602629536462,
+      "es_95_pct": 7.484148200199145,
+      "var_99_pct": 8.538634570923433,
+      "es_99_pct": 8.931673736785042
+    },
+    "parametric_student_t": {
+      "method": "parametric_student_t",
+      "params": {
+        "df": 6.165638668625576,
+        "loc": -0.003110635484622596,
+        "scale": 0.045563346504678914
+      },
+      "assumption": "Lợi suất ~ Student-t(df, loc, scale) fit trên cửa sổ lịch sử; ES bằng Monte Carlo seed cố định (200k mô phỏng)",
+      "var_95": 914.913745495322,
+      "es_95": 1257.6594696320255,
+      "var_99": 1458.7616579141245,
+      "es_99": 1841.5803429531768,
+      "var_95_pct": 9.14913745495322,
+      "es_95_pct": 12.576594696320257,
+      "var_99_pct": 14.587616579141244,
+      "es_99_pct": 18.415803429531767
+    },
+    "convention": "LOSS = -simple_return x position (số dương = lỗ). VaR là ngưỡng lỗ, không phải lỗ tối đa."
+  },
+  "metrics_oos": {
+    "historical_22d": {
+      "mae_vol": 0.014102317731453803,
+      "rmse_vol": 0.018075657078326767,
+      "qlike": 0.3466290003203046,
+      "n": 142
+    },
+    "garch_1_1": {
+      "mae_vol": 0.01412171514037625,
+      "rmse_vol": 0.01814664669045894,
+      "qlike": 0.3760181532988659,
+      "n": 142
+    },
+    "har_rv": {
+      "mae_vol": 0.01629489508831988,
+      "rmse_vol": 0.01877400435786737,
+      "qlike": 0.3236242801815097,
+      "n": 142
+    },
+    "xgboost": {
+      "mae_vol": 0.012940871708790097,
+      "rmse_vol": 0.01592387381936778,
+      "qlike": 0.2523426950141959,
+      "n": 142
+    }
+  },
+  "interpretation": {
+    "market_summary": "Volatility dự báo của IMX/USDT đang ở mức bình thường theo phân vị của tập huấn luyện. Cao hơn khoảng 38% số ngày trong giai đoạn huấn luyện. Điều này cho biết quy mô dao động có thể xảy ra, không cho biết giá sẽ tăng hay giảm.",
+    "risk_summary": "VaR 95% 1 ngày khoảng 698 USD trên vị thế tham chiếu 10,000 USD: theo mô hình, mức lỗ vượt ngưỡng này có xác suất đuôi khoảng 5% trong một ngày. Đây không phải mức lỗ tối đa. Expected Shortfall 95% khoảng 969 USD là mức lỗ trung bình có điều kiện trong nhóm 5% kết quả tệ nhất.",
+    "model_summary": "Mô hình được dùng cho VaR là xgboost vì có QLIKE out-of-sample thấp nhất (0.252) trong kỳ kiểm tra hiện tại.",
+    "what_could_be_wrong": [
+      "Tin tức/sự kiện thanh khoản cực đoan ngoài mẫu lịch sử có thể làm realized vol vượt xa dự báo.",
+      "Phân phối Student-t giả định đuôi đối xứng; thực tế đuôi giảm có thể nặng hơn.",
+      "Nếu dữ liệu mới chưa được cập nhật (stale), dự báo phản ánh trạng thái cũ, không phải hiện tại."
+    ]
+  },
+  "limitations": [
+    "Dự báo volatility không dự báo hướng giá tăng/giảm.",
+    "VaR/ES dựa trên phân phối quá khứ/mô hình tham số; cú sốc chưa từng xuất hiện có thể vượt xa ước lượng.",
+    "RV ngày tính từ lợi suất 1h, không dùng dữ liệu tick; microstructure noise có thể ảnh hưởng.",
+    "Mô hình được chọn theo QLIKE out-of-sample trong cửa sổ test hiện tại; thứ hạng có thể đổi khi dữ liệu mới đến."
+  ]
+}

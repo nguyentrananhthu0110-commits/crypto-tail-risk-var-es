@@ -1,0 +1,149 @@
+{
+  "symbol": "STXUSDT",
+  "feature_importance": [
+    {
+      "feature": "log_volume_lag1",
+      "importance_rmse_increase": 0.00016488526598695168,
+      "share": 0.21004698647085487
+    },
+    {
+      "feature": "range_lag1",
+      "importance_rmse_increase": 0.00015484623001450325,
+      "share": 0.19725828009091567
+    },
+    {
+      "feature": "rv_lag1",
+      "importance_rmse_increase": 0.00014926423596782566,
+      "share": 0.1901473898546973
+    },
+    {
+      "feature": "volume_chg_lag1",
+      "importance_rmse_increase": 0.0001229135248795978,
+      "share": 0.15657927555220766
+    },
+    {
+      "feature": "cross_rv_lag1",
+      "importance_rmse_increase": 6.194935799759506e-05,
+      "share": 0.07891715419999219
+    },
+    {
+      "feature": "rv_w",
+      "importance_rmse_increase": 6.17549782320711e-05,
+      "share": 0.07866953423386103
+    },
+    {
+      "feature": "abs_ret_lag1",
+      "importance_rmse_increase": 2.816912316899213e-05,
+      "share": 0.035884585549574625
+    },
+    {
+      "feature": "rv_lag3",
+      "importance_rmse_increase": 1.8968321992540553e-05,
+      "share": 0.024163704677271042
+    },
+    {
+      "feature": "ret_sq_lag1",
+      "importance_rmse_increase": 1.1548558708071241e-05,
+      "share": 0.014711684153173976
+    },
+    {
+      "feature": "rv_lag2",
+      "importance_rmse_increase": 1.0692698144027912e-05,
+      "share": 0.013621405217451643
+    },
+    {
+      "feature": "rv_m",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
+    },
+    {
+      "feature": "ret_lag1",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
+    }
+  ],
+  "feature_schema": {
+    "rv_lag1": "RV ngày t (phương sai thực hiện)",
+    "rv_lag2": "RV ngày t-1",
+    "rv_lag3": "RV ngày t-2",
+    "rv_w": "Trung bình RV 5 ngày tới t (HAR weekly)",
+    "rv_m": "Trung bình RV 22 ngày tới t (HAR monthly)",
+    "ret_lag1": "Log-return ngày t",
+    "abs_ret_lag1": "|log-return ngày t|",
+    "ret_sq_lag1": "Bình phương log-return ngày t",
+    "range_lag1": "log(High/Low) ngày t",
+    "log_volume_lag1": "log(1+volume ngày t)",
+    "volume_chg_lag1": "Thay đổi log volume ngày t",
+    "cross_rv_lag1": "RV ngày t của tài sản dẫn dắt chéo (BTC cho altcoin/ETH; ETH cho BTC)"
+  },
+  "importance_method": "Permutation importance trên tập test (mức tăng RMSE khi xáo trộn feature). Không phải bằng chứng nhân quả.",
+  "garch": {
+    "engine": "arch_garch11_t",
+    "mu": -0.0026260670810414697,
+    "omega": 0.0004897256668494823,
+    "alpha": 0.14528964618286344,
+    "beta": 0.6772241295056456,
+    "nu": 4.2757664667188955,
+    "unconditional_var": 0.0027592319840553173
+  },
+  "har": {
+    "coef": [
+      0.0027259264345598122,
+      0.04430415334507529,
+      0.03773159091993898,
+      -0.03216619678876792
+    ],
+    "terms": [
+      "intercept",
+      "RV_day",
+      "RV_week(5d)",
+      "RV_month(22d)"
+    ]
+  },
+  "xgboost_engine": "xgboost_log_rv",
+  "xgboost_params": {
+    "objective": "reg:squarederror",
+    "base_score": "None",
+    "booster": "None",
+    "callbacks": "None",
+    "colsample_bylevel": "None",
+    "colsample_bynode": "None",
+    "colsample_bytree": "0.85",
+    "device": "None",
+    "early_stopping_rounds": "None",
+    "enable_categorical": "True",
+    "eval_metric": "None",
+    "feature_types": "None",
+    "feature_weights": "None",
+    "gamma": "None",
+    "grow_policy": "None",
+    "importance_type": "None",
+    "interaction_constraints": "None",
+    "learning_rate": "0.04",
+    "max_bin": "None",
+    "max_cat_threshold": "None",
+    "max_cat_to_onehot": "None",
+    "max_delta_step": "None",
+    "max_depth": "3",
+    "max_leaves": "None",
+    "min_child_weight": "None",
+    "missing": "nan",
+    "monotone_constraints": "None",
+    "multi_strategy": "None",
+    "n_estimators": "300",
+    "n_jobs": "2",
+    "num_parallel_tree": "None",
+    "random_state": "42",
+    "reg_alpha": "None",
+    "reg_lambda": "1.0",
+    "sampling_method": "None",
+    "scale_pos_weight": "None",
+    "subsample": "0.85",
+    "tree_method": "None",
+    "validate_parameters": "None",
+    "verbosity": "None",
+    "target_transform": "log_rv_duan_smearing",
+    "smear_factor": "1.097039",
+    "min_var_floor": "1.2159042642494745e-05"
+  }
+}

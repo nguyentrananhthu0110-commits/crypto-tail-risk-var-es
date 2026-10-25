@@ -1,49 +1,49 @@
 {
   "symbol": "BTCUSDT",
   "status": "ready",
-  "generated_at_utc": "2026-10-22T14:27:39.038093+00:00",
+  "generated_at_utc": "2026-10-24T12:11:46.955909+00:00",
   "model_version": "1.0.0",
   "feature_version": "1.0.0",
   "train_period": {
     "start": "2024-11-13",
-    "end": "2026-05-31",
-    "n_train": 565
+    "end": "2026-06-02",
+    "n_train": 567
   },
   "test_period": {
-    "start": "2026-06-02",
-    "end": "2026-10-21",
+    "start": "2026-06-04",
+    "end": "2026-10-23",
     "n_test": 142
   },
-  "last_closed_day": "2026-10-21",
+  "last_closed_day": "2026-10-23",
   "horizon_days": 1,
   "selected_model": "xgboost",
-  "forecast_vol_daily": 0.01781454229227985,
-  "forecast_vol_annualized_pct": 34.03463526107647,
-  "forecast_vol_7d": 0.04713284862581501,
+  "forecast_vol_daily": 0.012810520209401008,
+  "forecast_vol_annualized_pct": 24.474464495254463,
+  "forecast_vol_7d": 0.03389345063944215,
   "forecast_7d_note": "vol 1 ngày x sqrt(7) (giả định độc lập, chỉ để tham chiếu quy mô)",
   "models_vol_daily": {
-    "historical_22d": 0.016841264948276726,
-    "har_rv": 0.01804752479556678,
-    "xgboost": 0.01781454229227985,
-    "garch_1_1": 0.01846405840014248
+    "historical_22d": 0.01635570122086203,
+    "har_rv": 0.018553894493166138,
+    "xgboost": 0.012810520209401008,
+    "garch_1_1": 0.019612289530494154
   },
   "models_vol_annualized_pct": {
-    "historical_22d": 32.17519150621948,
-    "har_rv": 34.47974770861994,
-    "xgboost": 34.03463526107647,
-    "garch_1_1": 35.27553404279137
+    "historical_22d": 31.247523307540597,
+    "har_rv": 35.44716565752364,
+    "xgboost": 24.474464495254463,
+    "garch_1_1": 37.46922653714574
   },
-  "current_realized_vol_daily": 0.013907455921958477,
-  "current_realized_vol_annualized_pct": 26.570157231515314,
+  "current_realized_vol_daily": 0.014227077890955979,
+  "current_realized_vol_annualized_pct": 27.18079414588449,
   "regime": {
-    "regime": "normal",
-    "label_vi": "Bình thường",
-    "description": "Biến động nằm trong vùng thường gặp trong lịch sử tham chiếu.",
-    "percentile_vs_train": 45.309734513274336,
+    "regime": "low",
+    "label_vi": "Thấp",
+    "description": "Biến động thấp hơn phần lớn lịch sử tham chiếu; dao động giá thường hẹp hơn mức quen thuộc.",
+    "percentile_vs_train": 23.28042328042328,
     "thresholds": {
-      "q25": 0.013247870346233774,
-      "q75": 0.026132879151145125,
-      "q90": 0.034303083577787205,
+      "q25": 0.013279610659025963,
+      "q75": 0.02615385758692238,
+      "q90": 0.03429844186639998,
       "rule": "Low<q25 | Normal q25-q75 | Elevated q75-q90 | High/Stress>q90 (phân vị realized vol tập train)"
     }
   },
@@ -52,83 +52,89 @@
     "horizon_days": 1,
     "selected_model": "xgboost",
     "selection_rule": "QLIKE out-of-sample thấp nhất trên tập test theo thứ tự thời gian",
+    "nu_policy": "Thống nhất dùng ν Student-t ước lượng CHỈ trên giai đoạn train (t_df_train_only) cho toàn bộ hệ thống (cả dự báo VaR/ES lẫn mọi kiểm định OOS); t_df_live toàn mẫu chỉ lưu để đối chiếu.",
+    "t_df_used": 3.4993177801107374,
+    "t_df_live": 3.338437264124587,
+    "t_df_train_only": 3.4993177801107374,
+    "t_df_full_sample_reference": 3.338437264124587,
+    "t_df_reference_note": "t_df_train_only dùng thống nhất trên mọi tab và mọi kiểm định OOS; t_df_live toàn mẫu chỉ giữ để đối chiếu mức lệch rò rỉ trong backtest_nu.csv.",
     "forecast_based": {
       "method": "forecast_vol_student_t",
-      "t_df": 3.331206486722245,
-      "sigma_daily": 0.01781454229227985,
+      "t_df": 3.4993177801107374,
+      "sigma_daily": 0.012810520209401008,
       "horizon_days": 1,
       "assumption": "Lợi suất kỳ tới = sigma_dự_báo x epsilon, epsilon ~ Student-t chuẩn hoá (phương sai 1). Mu=0.",
-      "var_95": 254.6194284028056,
-      "es_95": 400.5706849865991,
-      "var_99": 472.84377966312417,
-      "es_99": 705.8207071583806,
-      "var_95_pct": 2.546194284028056,
-      "es_95_pct": 4.005706849865991,
-      "var_99_pct": 4.728437796631241,
-      "es_99_pct": 7.058207071583807
+      "var_95": 186.37139909683916,
+      "es_95": 288.3829879622081,
+      "var_99": 340.54891997836523,
+      "es_99": 497.253289155172,
+      "var_95_pct": 1.8637139909683915,
+      "es_95_pct": 2.8838298796220814,
+      "var_99_pct": 3.4054891997836525,
+      "es_99_pct": 4.972532891551721
     },
     "historical_simulation": {
       "method": "historical_simulation",
       "n_obs": 250,
       "assumption": "Phân phối thực nghiệm của lợi suất quá khứ đại diện cho kỳ tới",
-      "var_95": 282.7806658223517,
-      "es_95": 378.6678989876943,
+      "var_95": 296.1802495963709,
+      "es_95": 380.69010736714966,
       "var_99": 417.3921242251846,
       "es_99": 511.8157100879842,
-      "var_95_pct": 2.8278066582235173,
-      "es_95_pct": 3.7866789898769433,
+      "var_95_pct": 2.9618024959637093,
+      "es_95_pct": 3.8069010736714968,
       "var_99_pct": 4.173921242251846,
       "es_99_pct": 5.118157100879842
     },
     "parametric_student_t": {
       "method": "parametric_student_t",
       "params": {
-        "df": 3.331206486722245,
-        "loc": 3.2407196515507855e-07,
-        "scale": 0.015510948312952855
+        "df": 3.4993177801107374,
+        "loc": -0.00014793177712759921,
+        "scale": 0.01637146163018946
       },
       "assumption": "Lợi suất ~ Student-t(df, loc, scale) fit trên cửa sổ lịch sử; ES bằng Monte Carlo seed cố định (200k mô phỏng)",
-      "var_95": 351.6022401675798,
-      "es_95": 552.9230356249344,
-      "var_99": 647.9306981634351,
-      "es_99": 948.8398711028767,
-      "var_95_pct": 3.516022401675798,
-      "es_95_pct": 5.529230356249344,
-      "var_99_pct": 6.47930698163435,
-      "es_99_pct": 9.488398711028767
+      "var_95": 365.6814069895366,
+      "es_95": 564.83243174511,
+      "var_99": 661.7894515009637,
+      "es_99": 950.651382217479,
+      "var_95_pct": 3.6568140698953657,
+      "es_95_pct": 5.648324317451099,
+      "var_99_pct": 6.617894515009636,
+      "es_99_pct": 9.506513822174789
     },
     "convention": "LOSS = -simple_return x position (số dương = lỗ). VaR là ngưỡng lỗ, không phải lỗ tối đa."
   },
   "metrics_oos": {
     "historical_22d": {
-      "mae_vol": 0.007446089799897175,
-      "rmse_vol": 0.01005275452696454,
-      "qlike": 0.5715785201420435,
+      "mae_vol": 0.007249831459589157,
+      "rmse_vol": 0.009881047892780602,
+      "qlike": 0.5521618203361225,
       "n": 142
     },
     "garch_1_1": {
-      "mae_vol": 0.008286714614583532,
-      "rmse_vol": 0.010220928761405297,
-      "qlike": 0.49982564634449256,
+      "mae_vol": 0.008244519411910546,
+      "rmse_vol": 0.010179477692627552,
+      "qlike": 0.49577208492687447,
       "n": 142
     },
     "har_rv": {
-      "mae_vol": 0.007593698070685607,
-      "rmse_vol": 0.009633014803275077,
-      "qlike": 0.4587961815741937,
+      "mae_vol": 0.007526232448153392,
+      "rmse_vol": 0.009580507064828386,
+      "qlike": 0.45448819931747547,
       "n": 142
     },
     "xgboost": {
-      "mae_vol": 0.007941990701844943,
-      "rmse_vol": 0.010096670429494806,
-      "qlike": 0.4303647909505712,
+      "mae_vol": 0.006472524234141676,
+      "rmse_vol": 0.008675159249677357,
+      "qlike": 0.4224321732667617,
       "n": 142
     }
   },
   "interpretation": {
-    "market_summary": "Volatility dự báo của BTC/USDT đang ở mức bình thường theo phân vị của tập huấn luyện. Cao hơn khoảng 45% số ngày trong giai đoạn huấn luyện. Điều này cho biết quy mô dao động có thể xảy ra, không cho biết giá sẽ tăng hay giảm.",
-    "risk_summary": "VaR 95% 1 ngày khoảng 255 USD trên vị thế tham chiếu 10,000 USD: theo mô hình, mức lỗ vượt ngưỡng này có xác suất đuôi khoảng 5% trong một ngày. Đây không phải mức lỗ tối đa. Expected Shortfall 95% khoảng 401 USD là mức lỗ trung bình có điều kiện trong nhóm 5% kết quả tệ nhất.",
-    "model_summary": "Mô hình được dùng cho VaR là xgboost vì có QLIKE out-of-sample thấp nhất (0.430) trong kỳ kiểm tra hiện tại.",
+    "market_summary": "Volatility dự báo của BTC/USDT đang ở mức thấp theo phân vị của tập huấn luyện. Cao hơn khoảng 23% số ngày trong giai đoạn huấn luyện. Điều này cho biết quy mô dao động có thể xảy ra, không cho biết giá sẽ tăng hay giảm.",
+    "risk_summary": "VaR 95% 1 ngày khoảng 186 USD trên vị thế tham chiếu 10,000 USD: theo mô hình, mức lỗ vượt ngưỡng này có xác suất đuôi khoảng 5% trong một ngày. Đây không phải mức lỗ tối đa. Expected Shortfall 95% khoảng 288 USD là mức lỗ trung bình có điều kiện trong nhóm 5% kết quả tệ nhất.",
+    "model_summary": "Mô hình được dùng cho VaR là xgboost vì có QLIKE out-of-sample thấp nhất (0.422) trong kỳ kiểm tra hiện tại.",
     "what_could_be_wrong": [
       "Tin tức/sự kiện thanh khoản cực đoan ngoài mẫu lịch sử có thể làm realized vol vượt xa dự báo.",
       "Phân phối Student-t giả định đuôi đối xứng; thực tế đuôi giảm có thể nặng hơn.",

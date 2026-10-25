@@ -3,46 +3,41 @@
   "feature_importance": [
     {
       "feature": "log_volume_lag1",
-      "importance_rmse_increase": 1.482641252325645e-05,
-      "share": 0.2080647370767136
-    },
-    {
-      "feature": "rv_w",
-      "importance_rmse_increase": 1.3561771005197987e-05,
-      "share": 0.1903175373047935
-    },
-    {
-      "feature": "rv_lag3",
-      "importance_rmse_increase": 9.93651894029069e-06,
-      "share": 0.1394429837647117
+      "importance_rmse_increase": 3.69789369152457e-05,
+      "share": 0.35887622728118135
     },
     {
       "feature": "rv_lag1",
-      "importance_rmse_increase": 9.366244815447447e-06,
-      "share": 0.1314401081087805
+      "importance_rmse_increase": 2.9141143652749633e-05,
+      "share": 0.2828113668255854
+    },
+    {
+      "feature": "rv_lag3",
+      "importance_rmse_increase": 1.361136544258902e-05,
+      "share": 0.1320966984361275
     },
     {
       "feature": "volume_chg_lag1",
-      "importance_rmse_increase": 7.65465323902489e-06,
-      "share": 0.10742068663561762
-    },
-    {
-      "feature": "rv_m",
-      "importance_rmse_increase": 7.428581640140427e-06,
-      "share": 0.10424813712584068
+      "importance_rmse_increase": 1.148306279076018e-05,
+      "share": 0.11144177187749058
     },
     {
       "feature": "ret_lag1",
-      "importance_rmse_increase": 5.72270342667758e-06,
-      "share": 0.08030889346778791
+      "importance_rmse_increase": 9.169577278088348e-06,
+      "share": 0.08898966746572101
     },
     {
-      "feature": "cross_rv_lag1",
-      "importance_rmse_increase": 2.761765595003839e-06,
-      "share": 0.0387569165157545
+      "feature": "rv_w",
+      "importance_rmse_increase": 2.656834728822599e-06,
+      "share": 0.0257842681138942
     },
     {
       "feature": "rv_lag2",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
+    },
+    {
+      "feature": "rv_m",
       "importance_rmse_increase": 0.0,
       "share": 0.0
     },
@@ -60,6 +55,11 @@
       "feature": "range_lag1",
       "importance_rmse_increase": 0.0,
       "share": 0.0
+    },
+    {
+      "feature": "cross_rv_lag1",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
     }
   ],
   "feature_schema": {
@@ -74,24 +74,24 @@
     "range_lag1": "log(High/Low) ngày t",
     "log_volume_lag1": "log(1+volume ngày t)",
     "volume_chg_lag1": "Thay đổi log volume ngày t",
-    "cross_rv_lag1": "RV ngày t của tài sản còn lại (BTC<->ETH)"
+    "cross_rv_lag1": "RV ngày t của tài sản dẫn dắt chéo (BTC cho altcoin/ETH; ETH cho BTC)"
   },
   "importance_method": "Permutation importance trên tập test (mức tăng RMSE khi xáo trộn feature). Không phải bằng chứng nhân quả.",
   "garch": {
     "engine": "arch_garch11_t",
-    "mu": 0.0003174499638473562,
-    "omega": 2.363420203988321e-05,
-    "alpha": 0.06401099594124156,
-    "beta": 0.898352863658158,
-    "nu": 3.78247995201297,
-    "unconditional_var": 0.000627965614654424
+    "mu": 0.00025918916794167766,
+    "omega": 2.356867395618193e-05,
+    "alpha": 0.06188834667516491,
+    "beta": 0.9004833913876887,
+    "nu": 3.7791795661584597,
+    "unconditional_var": 0.0006263556365040378
   },
   "har": {
     "coef": [
-      0.00019816532417595313,
-      0.24855480731042418,
-      0.3598099699163773,
-      0.03370507704545822
+      0.0002035874647954853,
+      0.25123617667572135,
+      0.3567862705450452,
+      0.028244563272381628
     ],
     "terms": [
       "intercept",
@@ -100,7 +100,7 @@
       "RV_month(22d)"
     ]
   },
-  "xgboost_engine": "xgboost",
+  "xgboost_engine": "xgboost_log_rv",
   "xgboost_params": {
     "objective": "reg:squarederror",
     "base_score": "None",
@@ -141,6 +141,9 @@
     "subsample": "0.85",
     "tree_method": "None",
     "validate_parameters": "None",
-    "verbosity": "None"
+    "verbosity": "None",
+    "target_transform": "log_rv_duan_smearing",
+    "smear_factor": "1.139013",
+    "min_var_floor": "1.2150599714156469e-06"
   }
 }

@@ -19,7 +19,7 @@ Neu double-click START_HERE.pyw lai mo VS Code/Notepad:
 NAP DU LIEU MOI
 ---------------
 Co 3 cach, chon 1 cach:
-A. Trong START_HERE.pyw: bam "2) Nap du lieu & huan luyen" hoac "Cap nhat du lieu".
+A. Trong START_HERE.pyw: bam "2) Nap du lieu & huan luyen" hoac "4) Cap nhat du lieu".
 B. Trong trinh duyet: mo tab "Du lieu & he thong" -> bam "Nap du lieu & huan luyen".
 C. Bang PowerShell:
    powershell -ExecutionPolicy Bypass -File .\setup.ps1
