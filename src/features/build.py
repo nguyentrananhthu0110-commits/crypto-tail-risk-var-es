@@ -15,7 +15,7 @@ FEATURE_SCHEMA = {
     "ret_lag1": "Log-return ngày t", "abs_ret_lag1": "|log-return ngày t|",
     "ret_sq_lag1": "Bình phương log-return ngày t", "range_lag1": "log(High/Low) ngày t",
     "log_volume_lag1": "log(1+volume ngày t)", "volume_chg_lag1": "Thay đổi log volume ngày t",
-    "cross_rv_lag1": "RV ngày t của tài sản còn lại (BTC<->ETH)",
+    "cross_rv_lag1": "RV ngày t của tài sản dẫn dắt chéo (BTC cho altcoin/ETH; ETH cho BTC)",
 }
 FEATURE_COLS = list(FEATURE_SCHEMA.keys())
 

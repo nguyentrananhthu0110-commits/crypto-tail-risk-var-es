@@ -70,3 +70,24 @@ Diễn giải: tần suất breach OOS tương thích thống kê với mức da
 - **Nạp dữ liệu ngay trong trình duyệt**: endpoint `POST /api/admin/prepare` chạy nền cho BTC+ETH; E2E với backend thật đã bấm nút trên dashboard và job **prepare: success sau ~9 giây** (dữ liệu đã ở checkpoint gần nhất, huấn luyện lại hoàn tất, console sạch). Luồng model-chưa-khởi-tạo được kiểm chứng bằng route mock: empty state hiện nút “Nạp dữ liệu & huấn luyện ngay” và gọi đúng endpoint.
 - **PowerShell/VS Code**: `setup.ps1`, `prepare_data.ps1`, `update_data.ps1`, `run_app.ps1` tự định vị thư mục, không gọi ngược `.cmd`; `.vscode/tasks.json` có 4 task tương ứng. Chưa chạy được PowerShell thật trong sandbox (không có `pwsh`/Windows) — đã kiểm tra tĩnh và dùng chung các script Python đã kiểm chứng.
 - **ZIP đóng gói sẵn dữ liệu/mô hình**: sau khi cài thư viện có thể mở app ngay; dữ liệu mới được kéo bằng nút trong GUI/trình duyệt thay vì CMD.
+
+---
+## Bổ sung 2026-10-24: backtest mở rộng & chống rò rỉ
+
+**Thay đổi mã**
+- `src/backtest/run_backtest.py` (mới): backtest 4 mô hình cùng tập test + mẫu dài rolling (GARCH-t, EWMA-t, Historical 22d-t, GARCH-chuẩn); Kupiec, Christoffersen, Basel, ES-Z2, Diebold–Mariano. Tự phát hiện symbol, không gắn cứng BTC/ETH.
+- `src/models/training.py`: `_backtest` dùng ν ước lượng **chỉ trên dữ liệu trước kỳ test** (`t_fit_train`); ν toàn mẫu giữ cho VaR/ES hiện tại. `backtest.json` ghi thêm `t_df_used`.
+- `app/main.py`: `GET /api/backtest-extended`; dashboard tab *Kiểm định* có panel mới.
+- Mẫu dài đổi log return → simple return cho đúng quy ước LOSS (BTC GARCH-t 95%: 123 → 119 vi phạm).
+
+**Tác động của việc bỏ rò rỉ ν** (backtest.json của mô hình được chọn)
+| | Trước | Sau |
+|---|---|---|
+| BTCUSDT VaR95 / VaR99 vi phạm | 6 / 1 | 6 / 1 |
+| ETHUSDT VaR95 vi phạm (kỳ vọng 7,1) | 7 (Kupiec p 0,969) | 4 (p 0,195) |
+| ETHUSDT VaR99 vi phạm (kỳ vọng 1,4) | 2 | 1 |
+→ ν rò rỉ từng làm ETH trông “khớp” hơn thực tế. Với n=142 cả hai đều không bị bác bỏ.
+
+**Kết quả mẫu dài (2.577 ngày OOS, BTC/ETH)**: GARCH-t không bị bác bỏ ở cả 95% và 99% (Kupiec p 0,16–0,37). Historical 22d-t bị bác bỏ rõ (p < 0,002 ở cả hai mức). EWMA-t bị bác bỏ ở 95% (p 0,02–0,03). GARCH-chuẩn bị bác bỏ ở 95% (p < 1e-5, VaR quá thấp… tức quá ít vi phạm) và ES-Z2 ở 99% với BTC (p 0,027). DM trên pinball: GARCH-t và EWMA-t tốt hơn Historical 22d-t có ý nghĩa ở 95% (p ≤ 0,02).
+
+**Kiểm chứng**: 82 test pass, 1 skip (live smoke cần mạng). Đã hoàn thiện đồng bộ cho toàn bộ **35/35 coin đang giao dịch thực tế (`TRADING`) trên Binance Spot** (dọn sạch mọi dấu vết coin đã ngừng giao dịch và tích hợp `sync_active_symbols` tự động gỡ bỏ khỏi `config.json` + `data/` + `models/` + `manifest.sqlite` + `outputs/` bất cứ khi nào có cặp bị hủy niêm yết trên sàn). Sửa XGBoost sang dự báo `log(RV)` kèm hiệu chỉnh Duan smearing giúp QLIKE tối đa toàn bộ 35 coin về `0.535` (từ `7.56e7`) và `|ES-Z2|` về `≤ 1.57` (từ `13,195.9`); thống nhất 100% bậc tự do Student-t `t_df_train_only` xuyên suốt mọi tab và kiểm định; hiển thị trực tiếp cột **ES dự báo / Lỗ thực TB (%)** và các ngày vi phạm VaR99 lên cả giao diện Web lẫn **báo cáo xuất PDF chuyên sâu (`src/report.py`)** cho đủ 35/35 coin.

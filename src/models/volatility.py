@@ -129,16 +129,50 @@ class HARModel:
     def from_dict(cls, d):
         m = cls(); m.coef_ = np.array(d["coef"], float); return m
 
-# ---------------- XGBoost (fallback: HistGradientBoosting) ----------------
+# ---------------- XGBoost trên log(RV) (fallback: HistGradientBoosting) ----------------
+class LogRVRegressor:
+    """Huấn luyện cây tăng cường trên log(RV) để dự báo phương sai luôn dương tuyệt đối
+    và không bị bóp méo bởi vài ngày biến động cực đoan (tránh dự báo âm bị cắt về 1e-12
+    làm nổ QLIKE và ES-Z2). Dùng hệ số Duan (1983) smearing ước lượng CHỈ trên phần dư tập train
+    để khử chệch Jensen khi đổi ngược exp(log_rv) -> E[RV | X]."""
+    def __init__(self, base_model):
+        self.base_model = base_model
+        self.smear_ = 1.0
+        self.min_var_ = 1e-8
+
+    def fit(self, X, y_rv):
+        X_arr = np.asarray(X, float)
+        y_pos = np.clip(np.asarray(y_rv, float), 1e-10, None)
+        self.min_var_ = float(max(np.quantile(y_pos, 0.01) * 0.05, 1e-8))
+        log_y = np.log(y_pos)
+        self.base_model.fit(X_arr, log_y)
+        pred_train = np.asarray(self.base_model.predict(X_arr), float)
+        resid = np.clip(log_y - pred_train, -5.0, 5.0)
+        self.smear_ = float(np.clip(np.mean(np.exp(resid)), 0.8, 2.5))
+        return self
+
+    def predict(self, X):
+        X_arr = np.asarray(X, float)
+        log_pred = np.clip(np.asarray(self.base_model.predict(X_arr), float), -23.0, 4.0)
+        return np.clip(np.exp(log_pred) * self.smear_, self.min_var_, None)
+
+    def get_params(self, deep: bool = True) -> dict:
+        base = self.base_model.get_params(deep=deep) if hasattr(self.base_model, "get_params") else {}
+        return {**base, "target_transform": "log_rv_duan_smearing",
+                "smear_factor": round(self.smear_, 6), "min_var_floor": self.min_var_}
+
+
 def make_xgb_regressor():
     try:
         from xgboost import XGBRegressor
-        return XGBRegressor(n_estimators=300, max_depth=3, learning_rate=0.04, subsample=0.85,
-                            colsample_bytree=0.85, reg_lambda=1.0, random_state=42, n_jobs=2), "xgboost"
+        base = XGBRegressor(n_estimators=300, max_depth=3, learning_rate=0.04, subsample=0.85,
+                            colsample_bytree=0.85, reg_lambda=1.0, random_state=42, n_jobs=2)
+        return LogRVRegressor(base), "xgboost_log_rv"
     except Exception:
         from sklearn.ensemble import HistGradientBoostingRegressor
-        return HistGradientBoostingRegressor(max_iter=300, max_depth=3, learning_rate=0.04,
-                                             random_state=42), "sklearn_hist_gradient_boosting_fallback"
+        base = HistGradientBoostingRegressor(max_iter=300, max_depth=3, learning_rate=0.04,
+                                             random_state=42)
+        return LogRVRegressor(base), "sklearn_hist_gradient_boosting_log_rv_fallback"
 
 def permutation_importance(model, X: np.ndarray, y: np.ndarray, names: list[str], seed: int = 42) -> list[dict]:
     """Giải thích bằng permutation importance (không suy diễn nhân quả). Ổn định khi SHAP không khả dụng."""

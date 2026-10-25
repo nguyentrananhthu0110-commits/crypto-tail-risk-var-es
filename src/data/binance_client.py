@@ -99,6 +99,20 @@ class BinanceClient:
                 "volume_24h": float(d["volume"]), "quote_volume_24h": float(d["quoteVolume"]),
                 "open_24h": float(d["openPrice"]), "source": "binance_rest"}
 
+    def fetch_active_spot_symbols(self) -> set[str]:
+        """Lấy tập hợp các cặp Spot đang giao dịch thực tế (status == 'TRADING') trên Binance."""
+        d = self._get("/api/v3/exchangeInfo", {})
+        symbols = d.get("symbols") if isinstance(d, dict) else None
+        if not isinstance(symbols, list):
+            raise BinanceError("Phản hồi exchangeInfo không hợp lệ")
+        return {
+            str(s.get("symbol", "")).upper()
+            for s in symbols
+            if isinstance(s, dict)
+            and s.get("status") == "TRADING"
+            and s.get("isSpotTradingAllowed") is not False
+        }
+
 def empty_candles() -> pd.DataFrame:
     return pd.DataFrame(columns=["timestamp","open","high","low","close","volume","close_time","quote_volume","trades"])
 

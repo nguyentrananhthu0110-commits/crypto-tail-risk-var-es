@@ -1,6 +1,6 @@
 # Crypto Risk Intelligence
 
-Ứng dụng web chạy local trên Windows để **theo dõi thị trường đa tài sản (35 coin: BTC, ETH, BNB, SOL, XRP, ADA, DOGE, TRX, AVAX, LINK, DOT, POL, LTC, SHIB, UNI, ATOM, ETC, FIL, APT, ARB, OP, NEAR, SUI, PEPE, TON, INJ, STX, IMX, HBAR, TIA, RENDER, AR, GRT, AAVE, MKR) theo thời gian thực, dự báo biến động (volatility) và phân tích rủi ro đuôi (VaR/ES)**.
+Ứng dụng web chạy local trên Windows để **theo dõi thị trường đa tài sản (35 coin đang giao dịch thực tế trên Binance Spot: BTC, ETH, BNB, SOL, XRP, ADA, DOGE, TRX, AVAX, LINK, DOT, POL, LTC, SHIB, UNI, ATOM, ETC, FIL, APT, ARB, OP, NEAR, SUI, PEPE, BCH, INJ, STX, IMX, HBAR, TIA, RENDER, AR, GRT, AAVE, XLM) theo thời gian thực, dự báo biến động (volatility) và phân tích rủi ro đuôi (VaR/ES)**.
 
 > Đây là công cụ **nghiên cứu định lượng và hỗ trợ quản trị rủi ro**. Sản phẩm không phải bot giao dịch, không bảo đảm lợi nhuận và không đưa ra khuyến nghị đầu tư cá nhân hoá. Dự báo volatility **không** dự báo hướng giá tăng/giảm.
 
@@ -72,7 +72,7 @@ update_data.cmd              :: chỉ tải phần thiếu kể từ checkpoint 
 update_data.cmd --retrain    :: cập nhật + ép huấn luyện lại ngay
 ```
 
-- Chính sách mặc định: huấn luyện lại chỉ khi có **≥ 7 ngày** dữ liệu mới (cấu hình `retrain_min_new_days`), model bị thiếu, hoặc bạn ép `--retrain`.
+- Chính sách mặc định: khi có **≥ 1 ngày** dữ liệu đóng cửa mới (cấu hình `retrain_min_new_days`), model bị thiếu, hoặc bạn ép `--retrain`, hệ thống tự động huấn luyện lại mô hình và làm mới đồng bộ **cả bảng Backtest Tập ngắn lẫn Mẫu dài rolling** theo ngày đóng cửa mới nhất.
 - Trong dashboard cũng có nút **Cập nhật dữ liệu** và **Huấn luyện lại** (tab *Dữ liệu & hệ thống*) chạy nền, không chặn giao diện. Lưu ý dự báo chỉ thay đổi theo **ngày UTC đã đóng** — tick giá trực tiếp không làm đổi forecast, và giao diện phân biệt rõ hai loại thời gian cập nhật này.
 - Nếu cập nhật thất bại (mất mạng…), dataset tốt gần nhất vẫn còn nguyên (ghi file kiểu nguyên tử: ghi tạm → thay thế).
 
@@ -107,12 +107,26 @@ Dashboard có 3 phương pháp để đối chiếu độ nhạy giả định: 
 
 ## 6. Mô hình & đánh giá
 
-- **Benchmark**: trung bình RV 22 ngày. **GARCH(1,1)-t** (thư viện `arch`, có fallback MLE tự cài đặt bằng scipy). **HAR-RV** (Corsi): RV ngày/tuần/tháng. **XGBoost** trên lag RV/return/range/volume + RV chéo BTC↔ETH (fallback HistGradientBoosting nếu thiếu xgboost).
+- **Benchmark**: trung bình RV 22 ngày. **GARCH(1,1)-t** (thư viện `arch`, có fallback MLE tự cài đặt bằng scipy). **HAR-RV** (Corsi): RV ngày/tuần/tháng. **XGBoost** huấn luyện trên `log(RV)` kèm hiệu chỉnh Duan (1983) smearing trên phần dư tập train để bảo đảm dự báo phương sai luôn dương tuyệt đối, ổn định trước các phiên biến động cực đoan (fallback HistGradientBoosting nếu thiếu xgboost).
 - RV ngày = căn bậc hai của Σ(log-return 1 giờ)² trong ngày UTC. Feature tại ngày *t* chỉ dùng thông tin ≤ *t*; mục tiêu là RV ngày *t+1*.
 - Chia train/test **theo thời gian** 80/20 (không xáo trộn ngẫu nhiên); GARCH refit theo cửa sổ mở rộng trong test, chỉ dùng quá khứ.
 - Metrics: MAE, RMSE, **QLIKE** (mô hình dùng cho VaR là mô hình QLIKE ngoài-mẫu thấp nhất — hiển thị minh bạch), kiểm định **Diebold–Mariano** (hiệu chỉnh HLN).
 - Backtest VaR ngoài-mẫu: số breach, **Kupiec**, **Christoffersen**, quantile loss. Thiếu dữ liệu → báo *insufficient_data*, không kết luận "đạt".
-- Thời gian huấn luyện toàn bộ 2 symbol trên máy thông thường: ~15–60 giây + thời gian tải dữ liệu lần đầu.
+- Thời gian huấn luyện toàn bộ 35 symbol trên máy thông thường: ~45–90 giây.
+
+## 6b. Backtest VaR/ES mở rộng cho 35 coin (`src/backtest/run_backtest.py`)
+
+```
+python -m src.backtest.run_backtest                                   # 4 mô hình, tập test OOS ngắn cho đủ 35 coin
+python -m src.backtest.run_backtest --long-csv data/raw/Data_daily_BTC_ETH_2017-2026.csv   # + mẫu dài cho toàn bộ 35 coin
+```
+Ghi `outputs/tables/backtest_*.csv` và `outputs/figures/backtest_*.png`; dashboard đọc qua `GET /api/backtest-extended?symbol=…` (tab **Kiểm định**). Khi chạy `prepare_data` hoặc huấn luyện lại từ trình duyệt, bảng tập ngắn cũng tự động làm mới để luôn đồng bộ với mô hình.
+
+- **Quy ước**: LOSS = −simple_return; VaR_a = phân vị a của LOSS; ES_a = E[LOSS | LOSS ≥ VaR_a]; horizon 1 ngày, μ = 0; σ dự báo × Student-t chuẩn hoá phương sai 1. ES dùng công thức đóng (không Monte Carlo).
+- **Chống rò rỉ nhất quán**: Hệ thống thống nhất dùng duy nhất bậc tự do `t_df_train_only` (ước lượng **chỉ trên giai đoạn train** trước ngày test đầu tiên) xuyên suốt cả dự báo VaR/ES trực tiếp trên Dashboard lẫn mọi bảng backtest ngoài mẫu (`backtest.json` và `run_backtest.py`); giá trị `t_df_live` toàn mẫu chỉ lưu trong `backtest_nu.csv` để đối chiếu mức lệch nếu rò rỉ.
+- **Kiểm định**: Kupiec (UC), Christoffersen (CC, ghi rõ không đủ dữ liệu khi < 5 vi phạm), đối chiếu trực tiếp **ES dự báo TB / Lỗ thực TB (%)** trong các ngày vượt VaR kèm các ngày vi phạm VaR99 cụ thể, Basel traffic-light mở rộng theo nhị thức, ES-Z2 Acerbi–Székely (p-value mô phỏng, seed cố định), Diebold–Mariano trên pinball loss so với benchmark. Toàn bộ các bảng và nhận xét này đều được hiển thị trên giao diện Web và kết xuất đầy đủ trong **báo cáo PDF chuyên sâu** (`src/report.py`).
+- **Mẫu dài cho đủ 35 coin & tự động nối ngày mới**: BTC/ETH dùng chuỗi gốc 2017–2026 nối tiếp tự động với các nến ngày đóng cửa mới nhất từ `BTCUSDT_1d.parquet` / `ETHUSDT_1d.parquet` (~2.582+ ngày OOS, cửa sổ trượt 1.000 ngày); 33 altcoin còn lại tự động chạy rolling từ `data/raw/<SYMBOL>_1d.parquet` (~2.500 nến ngày lịch sử -> tới 1.498+ ngày OOS với cửa sổ 1.000 ngày, hoặc cửa sổ 500 ngày cho các coin niêm yết mới). Nhấn **2) Nạp dữ liệu & huấn luyện** hoặc **4) Cập nhật dữ liệu** (trong `START_HERE.pyw` hoặc trên trình duyệt) đều tự động cuốn chiếu cả Tập ngắn lẫn Mẫu dài tới ngày UTC đã đóng gần nhất.
+- **Nhận xét theo từng coin & hướng dẫn dễ hiểu**: Dưới mỗi bảng đều có hộp nhận xét tự động tổng hợp số vi phạm thực tế, các kiểm định đạt/bác bỏ và mô hình có Pinball Loss tốt nhất **riêng cho từng đồng coin**, kèm bảng giải thích trực quan cho người đọc không chuyên thống kê.
 
 ## 7. Kiểm tra trạng thái & xử lý lỗi thường gặp
 
@@ -138,11 +152,11 @@ Log: cửa sổ CMD + `logs/app.log`. API không trả stack trace ra trình duy
 
 ## 8. Cấu hình
 
-Sửa `config/config.json`: `history_days_hourly` (mặc định 730), `history_days_daily` (1500), `reference_position_usd` (10000), `train_ratio` (0.8), `retrain_min_new_days` (7), `port` (8765). Ghi đè nhanh bằng biến môi trường `CRI_HOST`, `CRI_PORT`, `CRI_NO_BROWSER=1`, `CRI_NO_PAUSE=1` (xem `.env.example`).
+Sửa `config/config.json`: `history_days_hourly` (mặc định 730), `history_days_daily` (2500), `reference_position_usd` (10000), `train_ratio` (0.8), `retrain_min_new_days` (1), `port` (8765). Ghi đè nhanh bằng biến môi trường `CRI_HOST`, `CRI_PORT`, `CRI_NO_BROWSER=1`, `CRI_NO_PAUSE=1` (xem `.env.example`).
 
 **Coin, timeframe biểu đồ và kỳ dự báo — ba khái niệm tách bạch:**
 
-- **Coin**: chọn bằng **dropdown tìm kiếm** trên thanh trên cùng — danh sách 35 coin chỉ hiện khi bạn gõ vào ô tìm kiếm, chọn một coin để xem dữ liệu; không còn hàng nút 35-coin luôn hiện. **Vị thế & đòn bẩy**: trong tab *Theo dõi rủi ro* chỉnh *Vị thế tham chiếu* và chọn **đòn bẩy 1×/2×/5×/10×** — VaR/ES được co giãn tuyến tính (Tổn thất có đòn bẩy = Tổn thất gốc × đòn bẩy), hiển thị đồng thời trên KPI và panel rủi ro. Thêm coin mới: thêm vào `symbols` trong `config.json` rồi chạy Nạp dữ liệu & huấn luyện cho coin đó; pipeline xử lý từng coin độc lập — một coin lỗi không chặn các coin còn lại (đã sửa các mã hết hạn MATIC→POL, RNDR→RENDER, FTM→TIA).
+- **Coin**: chọn bằng **dropdown tìm kiếm** trên thanh trên cùng — danh sách 35 coin đang giao dịch chỉ hiện khi bạn gõ vào ô tìm kiếm, chọn một coin để xem dữ liệu; không còn hàng nút luôn hiện. **Vị thế & đòn bẩy**: trong tab *Theo dõi rủi ro* chỉnh *Vị thế tham chiếu* và chọn **đòn bẩy 1×/2×/5×/10×** — VaR/ES được co giãn tuyến tính (Tổn thất có đòn bẩy = Tổn thất gốc × đòn bẩy), hiển thị đồng thời trên KPI và panel rủi ro. **Tự động lọc coin hủy niêm yết**: mỗi khi chạy **2) Nạp dữ liệu & huấn luyện** hoặc **4) Cập nhật dữ liệu**, hệ thống đối chiếu trực tiếp `/api/v3/exchangeInfo` trên Binance Spot (`status == "TRADING"`) — nếu có coin bị sàn xóa/ngừng giao dịch tại thời điểm đó, hệ thống tự động gỡ khỏi `config.json`, xóa toàn bộ dữ liệu/mô hình/SQLite và dòng backtest liên quan (nếu mất mạng tạm thời thì giữ nguyên an toàn, không xóa nhầm). Thêm coin mới: thêm vào `symbols` trong `config.json` rồi chạy Nạp dữ liệu & huấn luyện cho coin đó.
 - **Timeframe biểu đồ** (1m–1d): chọn trên thanh công cụ của chart; đây chỉ là kích thước nến hiển thị. Lựa chọn coin/timeframe/phương pháp VaR/vị thế/tab được trình duyệt ghi nhớ (localStorage) cho lần mở sau.
 - **Forecast horizon**: cố định **1 ngày** trong thiết kế model (mục tiêu huấn luyện là RV ngày kế tiếp) — không đổi được bằng cấu hình. Muốn horizon khác phải thay đổi target và huấn luyện lại ở tầng mã nguồn (`src/features/build.py` + `src/models/training.py`); con số “7 ngày” trên KPI là mở rộng quy mô có ghi nhãn, không phải một model 7 ngày riêng.
 
@@ -156,7 +170,7 @@ Sửa `config/config.json`: `history_days_hourly` (mặc định 730), `history_
 set CRI_LIVE_TEST=1 && .venv\Scripts\python.exe -m pytest tests\smoke\test_live_smoke.py -v
 ```
 
-Tests tổ chức theo `tests/unit` (dữ liệu, model, risk, retry policy, incremental, tái lập), `tests/integration` (API, persistence, file hỏng, hợp đồng launcher + mã thoát), `tests/smoke` (hợp đồng frontend tĩnh + smoke mạng thật tuỳ chọn) — tổng **62 tests** tại thời điểm bàn giao (chưa tính live smoke). Bộ kiểm thử mặc định dùng dữ liệu tổng hợp/mock, không gọi API sống: tính liên tục/gap/duplicate/OHLC, tổng hợp timeframe đúng ranh giới UTC, rò rỉ thông tin feature, train/test theo thời gian, đáp án đã biết cho QLIKE/HAR/Kupiec, quy ước dấu VaR/ES, breach logic, scaling theo √horizon, save/load model, chính sách retry (422 không retry · 421 chuyển host · 429 tôn trọng Retry-After · malformed JSON), lưu/đọc nguyên tử, API 200/404/422/500-corrupted/502 và fallback stale.
+Tests tổ chức theo `tests/unit` (dữ liệu, model, risk, retry policy, incremental, tái lập, log-RV XGBoost, phát hiện cặp ngừng giao dịch, thống nhất ν train-only), `tests/integration` (API, persistence, file hỏng, PDF báo cáo mở rộng, hợp đồng launcher + mã thoát), `tests/smoke` (hợp đồng frontend tĩnh + smoke mạng thật tuỳ chọn) — tổng **82 tests** tại thời điểm bàn giao (chưa tính live smoke). Bộ kiểm thử mặc định dùng dữ liệu tổng hợp/mock, không gọi API sống: tính liên tục/gap/duplicate/OHLC, tổng hợp timeframe đúng ranh giới UTC, rò rỉ thông tin feature, train/test theo thời gian, đáp án đã biết cho QLIKE/HAR/Kupiec, quy ước dấu VaR/ES, breach logic, scaling theo √horizon, save/load model, chính sách retry (422 không retry · 421 chuyển host · 429 tôn trọng Retry-After · malformed JSON), lưu/đọc nguyên tử, API 200/404/422/500-corrupted/502 và fallback stale.
 
 ## 10. Kiến trúc (tóm tắt)
 

@@ -111,14 +111,30 @@ def train_symbol(symbol: str, position_usd: float | None = None) -> dict:
     train_vol = np.sqrt(np.clip(train["rv_lag1"].to_numpy(), 0, None))
     thresholds = regime_mod.fit_thresholds(train_vol)
     reg = regime_mod.classify(best_vol, thresholds, train_vol)
-    rets_simple_train = daily["simple_return"].dropna().to_numpy()[-250:]
-    t_fit = fit_student_t(daily["simple_return"].dropna().to_numpy())
+    # QUY ƯỚC THỐNG NHẤT & CHỐNG RÒ RỈ (chuẩn hoá 2026-10-24):
+    # Thống nhất dùng bậc tự do Student-t ước lượng CHỈ trên giai đoạn train trước ngày test đầu tiên
+    # (t_df_train_only) cho TOÀN BỘ hệ thống (cả tab Theo dõi rủi ro hiện tại lẫn mọi backtest OOS)
+    # để không rò rỉ mẫu kiểm định và giữ một con số ν duy nhất xuyên suốt báo cáo.
+    # Giá trị t_df_live (trên toàn chuỗi tới hiện tại) chỉ lưu để đối chiếu mức lệch trong backtest_nu.csv.
+    rets_train_only = daily["simple_return"].iloc[:first_test_idx].dropna().to_numpy()
+    rets_observed = daily["simple_return"].dropna().to_numpy()
+    rets_recent_250 = rets_observed[-250:]
+    t_fit_train = fit_student_t(rets_train_only)
+    t_fit_live = fit_student_t(rets_observed)
     risk = {
         "reference_position_usd": position, "horizon_days": 1, "selected_model": best_model,
         "selection_rule": "QLIKE out-of-sample thấp nhất trên tập test theo thứ tự thời gian",
-        "forecast_based": forecast_var_es(best_vol, t_fit["df"], position),
-        "historical_simulation": historical_var_es(rets_simple_train, position),
-        "parametric_student_t": parametric_t_var_es(daily["simple_return"].dropna().to_numpy(), position),
+        "nu_policy": ("Thống nhất dùng ν Student-t ước lượng CHỈ trên giai đoạn train (t_df_train_only) "
+                      "cho toàn bộ hệ thống (cả dự báo VaR/ES lẫn mọi kiểm định OOS); t_df_live toàn mẫu chỉ lưu để đối chiếu."),
+        "t_df_used": float(t_fit_train["df"]),
+        "t_df_live": float(t_fit_live["df"]),
+        "t_df_train_only": float(t_fit_train["df"]),
+        "t_df_full_sample_reference": float(t_fit_live["df"]),
+        "t_df_reference_note": ("t_df_train_only dùng thống nhất trên mọi tab và mọi kiểm định OOS; "
+                                "t_df_live toàn mẫu chỉ giữ để đối chiếu mức lệch rò rỉ trong backtest_nu.csv."),
+        "forecast_based": forecast_var_es(best_vol, t_fit_train["df"], position),
+        "historical_simulation": historical_var_es(rets_recent_250, position),
+        "parametric_student_t": parametric_t_var_es(rets_train_only, position),
         "convention": "LOSS = -simple_return x position (số dương = lỗ). VaR là ngưỡng lỗ, không phải lỗ tối đa.",
     }
     for m in ("forecast_based", "historical_simulation", "parametric_student_t"):
@@ -126,8 +142,8 @@ def train_symbol(symbol: str, position_usd: float | None = None) -> dict:
             risk[m][f"var_{a}_pct"] = _safe(risk[m][f"var_{a}"] / position * 100)
             risk[m][f"es_{a}_pct"] = _safe(risk[m][f"es_{a}"] / position * 100)
 
-    # --- Backtest OOS với VaR forecast-based của mô hình được chọn ---
-    backtest = _backtest(daily, dates_test, forecasts_var[best_model], t_fit["df"], position)
+    # --- Backtest OOS với VaR forecast-based của mô hình được chọn (chỉ dùng t_df_train_only) ---
+    backtest = _backtest(daily, dates_test, forecasts_var[best_model], t_fit_train["df"], position)
 
     forecast = {
         "symbol": symbol, "status": "ready", "generated_at_utc": utcnow_iso(),
@@ -212,7 +228,8 @@ def _backtest(daily, dates_test, fc_var_best, t_df, position):
                      "breach95": bool(b95), "breach99": bool(b99), "forecast_vol_daily": _safe(sigma)})
     return {
         "method": "VaR forecast-based (mô hình được chọn bởi QLIKE) trên tập test out-of-sample",
-        "reference_position_usd": position, "series": rows,
+        "reference_position_usd": position, "t_df_used": dfree,
+        "t_df_note": "Bậc tự do t ước lượng CHỈ trên dữ liệu trước kỳ test (không rò rỉ).", "series": rows,
         "summary_95": {"n": len(rows), "breaches": int(sum(ind95)), "breach_rate": _safe(np.mean(ind95)),
                        "quantile_loss": _safe(quantile_loss(losses, var95s, 0.95)),
                        "kupiec": kupiec_test(int(sum(ind95)), len(rows), 0.95),

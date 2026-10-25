@@ -289,8 +289,8 @@ def main() -> None:
         ("setup", "1) Cài đặt thư viện", do_setup),
         ("prepare", "2) Nạp dữ liệu & huấn luyện", do_prepare),
         ("open", "3) Mở ứng dụng", do_open_app),
-        ("update", "Cập nhật dữ liệu", do_update),
-        ("stop", "Dừng ứng dụng", do_stop_app),
+        ("update", "4) Cập nhật dữ liệu", do_update),
+        ("stop", "5) Dừng ứng dụng", do_stop_app),
     ]
     for col in range(3):
         btn_frame.grid_columnconfigure(col, weight=1, uniform="main_buttons")

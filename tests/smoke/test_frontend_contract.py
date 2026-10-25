@@ -34,3 +34,10 @@ def test_no_fake_live_wording_for_stale_data():
     # Không dùng ngôn ngữ khẳng định hướng giá trên giao diện chính
     for banned in ("giá sẽ giảm", "giá sẽ tăng", "sắp sập", "an toàn tuyệt đối", "chắc chắn giảm"):
         assert banned not in HTML
+
+def test_extended_backtest_table_renders_es_vs_actual_loss_and_pdf_button():
+    assert "ES_dự_báo_trung_bình_%_ngày_vi_phạm" in JS
+    assert "lỗ_thực_tế_trung_bình_%_ngày_vi_phạm" in JS
+    assert "ES dự báo / Lỗ thực TB" in JS
+    assert "ngày_vi_phạm" in JS
+    assert 'id="btn-pdf-backtest"' in HTML and "#btn-pdf-backtest" in JS

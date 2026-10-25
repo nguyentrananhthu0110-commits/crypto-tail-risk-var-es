@@ -297,12 +297,12 @@ function riskExplainText(f) {
   const r = f.risk?.[state.method] || f.risk?.forecast_based || {};
   const selected = MODEL_NAMES[f.selected_model] || f.selected_model || "mô hình mặc định";
   if (state.method === "forecast_based") {
-    return `VaR theo dự báo lấy biến động 1 ngày của ${selected}, kết hợp phần đuôi Student-t (df ${fmtNum(r.t_df, 1)}) và quy mô theo vị thế ${fmtUSD(r.reference_position_usd ?? state.position)}. Hiệu ứng: biến động dự báo càng cao → VaR/ES càng lớn → cần nắm giữ tài sản bảo vệ nhiều hơn; VaR không phải mức lỗ tối đa, chỉ là ngưỡng có khoảng 5% xác suất vượt qua trong 1 ngày.`;
+    return `VaR theo dự báo lấy biến động 1 ngày của ${selected}, kết hợp phần đuôi Student-t thống nhất từ tập train (ν = ${fmtNum(r.t_df, 2)} — không rò rỉ mẫu kiểm định) và quy mô theo vị thế ${fmtUSD(r.reference_position_usd ?? state.position)}. Hiệu ứng: biến động dự báo càng cao → VaR/ES càng lớn → cần nắm giữ tài sản bảo vệ nhiều hơn; VaR không phải mức lỗ tối đa, chỉ là ngưỡng có khoảng 5% xác suất vượt qua trong 1 ngày.`;
   }
   if (state.method === "historical_simulation") {
     return `Mô phỏng lịch sử lấy ${r.n_obs || "nhiều"} lợi suất ngày gần nhất, tính ngưỡng trực tiếp từ quan sát thực, không áp đặt phân phối nào. Hiệu ứng: phản ánh đúng các cú sốc lịch sử, nhưng nếu tài sản này chưa từng trải qua giai đoạn khủng hoảng thì ngưỡng có thể bị đánh giá thấp.`;
   }
-  return `Student-t tham số được ước lượng trên toàn bộ lịch sử lợi suất ngày (df ${fmtNum(r.params?.df, 1)}). Hiệu ứng: phân phối Student-t có đuôi dày hơn chuẩn ⇒ ES thường cao hơn VaR tương ứng, phù hợp với tài sản crypto có độ nhạy cao.`;
+  return `Student-t tham số được ước lượng thống nhất trên giai đoạn huấn luyện (ν = ${fmtNum(r.params?.df, 2)}) để tránh rò rỉ dữ liệu kiểm định. Hiệu ứng: phân phối Student-t có đuôi dày hơn chuẩn ⇒ ES thường cao hơn VaR tương ứng, phù hợp với tài sản crypto có độ nhạy cao.`;
 }
 function modelsExplainText(p) {
   const best = MODEL_NAMES[p.selected_model] || p.selected_model || "—";
@@ -344,9 +344,9 @@ function renderModelList(models = {}, selected, selector) {
 }
 function riskMethodNote(f) {
   const selected = MODEL_NAMES[f.selected_model] || f.selected_model || "mô hình đang chọn"; const r = f.risk?.[state.method];
-  if (state.method === "forecast_based") return `VaR theo dự báo dùng biến động của ${selected} kết hợp phần đuôi Student-t (df ${fmtNum(r?.t_df, 1)}).`;
+  if (state.method === "forecast_based") return `VaR theo dự báo dùng biến động của ${selected} kết hợp phần đuôi Student-t thống nhất trên tập train (ν = ${fmtNum(r?.t_df, 2)}).`;
   if (state.method === "historical_simulation") return `Mô phỏng lịch sử dùng ${r?.n_obs || "các"} lợi suất ngày gần nhất, không áp đặt phân phối tham số.`;
-  return `Student-t tham số được ước lượng trên toàn bộ lịch sử lợi suất ngày (df ${fmtNum(r?.params?.df, 1)}).`;
+  return `Student-t tham số được ước lượng thống nhất trên giai đoạn huấn luyện (ν = ${fmtNum(r?.params?.df, 2)}).`;
 }
 function setRiskMetrics(f) {
   const chosenRaw = f.risk?.[state.method] || f.risk?.forecast_based || {};
@@ -481,6 +481,7 @@ async function loadBacktest() {
     ].map((t) => `<li>${t}</li>`).join("");
   }
   drawBacktest();
+  loadBacktestExtended().catch(() => {});
 }
 function btVisibleRange(){
   const b=state.backtest; if(!b||!b.series) return [0,0];
@@ -535,6 +536,202 @@ function bindBtTooltip(){
   },{passive:false});
 }
 
+/* Backtest mở rộng: bảng từ outputs/tables (python -m src.backtest.run_backtest) */
+const escHtml = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const MODEL_LABEL_EXT = { historical_22d: "Historical 22d", garch_1_1: "GARCH(1,1)", har_rv: "HAR-RV", xgboost: "XGBoost" };
+const mLabel = (m) => MODEL_LABEL_EXT[m] || m;
+const pCell = (p) => p == null ? "—" : `<span style="${Number(p) < 0.05 ? "color:var(--negative,#d83c3c);font-weight:600" : ""}">${fmtNum(p, 3)}</span>`;
+const dmPCell = (dm, p) => {
+  if (p == null) return "—";
+  if (Number(p) < 0.05) {
+    const col = Number(dm) < 0 ? "var(--positive,#25b864)" : "var(--negative,#d83c3c)";
+    return `<span style="color:${col};font-weight:600">${fmtNum(p, 3)}</span>`;
+  }
+  return fmtNum(p, 3);
+};
+const dmVerdict = (r) => {
+  const dm = Number(r.DM_stat), p = r.p_value == null ? null : Number(r.p_value);
+  if (p == null || !Number.isFinite(dm)) return `<span class="muted">Không đủ dữ liệu so sánh</span>`;
+  if (p < 0.05 && dm < 0) return `<span style="color:var(--positive,#25b864);font-weight:600">Tốt hơn mốc cơ sở rõ rệt (đủ bằng chứng thống kê)</span>`;
+  if (p < 0.05 && dm > 0) return `<span style="color:var(--negative,#d83c3c);font-weight:600">Kém hơn mốc cơ sở rõ rệt (sai số lớn hơn có ý nghĩa)</span>`;
+  if (dm < 0) return `<span class="muted">Sai số thấp hơn nhẹ nhưng chưa đủ chắc chắn (coi như ngang nhau, p ≥ 0.05)</span>`;
+  if (dm > 0) return `<span class="muted">Sai số cao hơn nhẹ nhưng chưa đủ chắc chắn (coi như ngang nhau, p ≥ 0.05)</span>`;
+  return `<span class="muted">Tương đương mốc cơ sở</span>`;
+};
+const baselBadge = (z) => {
+  if (!z) return "";
+  const col = z === "Xanh" ? "var(--positive,#25b864)" : (z === "Vàng" ? "var(--warning,#f2b64b)" : "var(--negative,#d83c3c)");
+  return `<span style="color:${col};font-weight:600">${escHtml(z)}</span>`;
+};
+// Ô Christoffersen: phân biệt rõ "đã kiểm định" với "không đủ dữ liệu".
+const chCell = (r) => r.christoffersen_cc_p != null
+  ? pCell(r.christoffersen_cc_p)
+  : `<span style="color:var(--muted-2,#7d8b9f);font-size:11px">${escHtml(r.christoffersen_cc_note || "không đủ dữ liệu")}</span>`;
+// Ô đối chiếu trực tiếp Câu hỏi 2: ES dự báo TB vs Lỗ thực tế TB trong các ngày vượt VaR.
+const esActualCell = (r) => {
+  const esP = r["ES_dự_báo_trung_bình_%_ngày_vi_phạm"];
+  const lossA = r["lỗ_thực_tế_trung_bình_%_ngày_vi_phạm"];
+  if (esP == null || lossA == null) {
+    return Number(r["vi_phạm"]) === 0
+      ? `<span style="color:var(--muted-2,#7d8b9f);font-size:11px">0 vi phạm</span>`
+      : "—";
+  }
+  const under = Number(lossA) > Number(esP) && r.ES_Z2_p != null && Number(r.ES_Z2_p) < 0.05;
+  const txt = `${fmtPct(esP, 2)} / ${fmtPct(lossA, 2)}`;
+  return under ? `<span style="color:var(--negative,#d83c3c);font-weight:600">${txt}</span>` : txt;
+};
+
+function rowFailures(r) {
+  const fails = [];
+  if (r.kupiec_p != null && Number(r.kupiec_p) < 0.05) {
+    fails.push(Number(r["vi_phạm"]) > Number(r["kỳ_vọng"]) ? `vượt ngưỡng quá nhiều (${r["vi_phạm"]}/${fmtNum(r["kỳ_vọng"], 1)}, Kupiec p=${fmtNum(r.kupiec_p, 3)})` : `quá dè dặt (${r["vi_phạm"]}/${fmtNum(r["kỳ_vọng"], 1)}, Kupiec p=${fmtNum(r.kupiec_p, 3)})`);
+  }
+  if (r.christoffersen_cc_p != null && Number(r.christoffersen_cc_p) < 0.05) fails.push(`vi phạm co cụm (CC p=${fmtNum(r.christoffersen_cc_p, 3)})`);
+  if (r.ES_Z2_p != null && Number(r.ES_Z2_p) < 0.05) fails.push(`hụt dự phòng ES (Z2 p=${fmtNum(r.ES_Z2_p, 3)})`);
+  if (r.Basel === "Đỏ") fails.push("Basel Đỏ");
+  return fails;
+}
+
+function extCoinCallout(rows, symbol, isLong, longRows) {
+  if (!rows || !rows.length) return "";
+  const n = rows[0].n;
+  const span = rows[0]["từ_ngày"] && rows[0]["đến_ngày"] ? ` (${escHtml(rows[0]["từ_ngày"])} → ${escHtml(rows[0]["đến_ngày"])})` : "";
+  const r95 = rows.filter((r) => String(r["mức_tin_cậy"]) === "95%");
+  const r99 = rows.filter((r) => String(r["mức_tin_cậy"]) === "99%");
+  const exp95 = r95[0] ? fmtNum(r95[0]["kỳ_vọng"], 1) : "—";
+  const exp99 = r99[0] ? fmtNum(r99[0]["kỳ_vọng"], 1) : "—";
+  const anyRejected = rows.some((r) => rowFailures(r).length > 0);
+  const bestPinball = (arr) => {
+    const valid = arr.filter((x) => x.pinball_loss != null && Number.isFinite(Number(x.pinball_loss)));
+    if (!valid.length) return null;
+    return valid.reduce((a, b) => Number(a.pinball_loss) <= Number(b.pinball_loss) ? a : b);
+  };
+
+  if (!isLong) {
+    const br95 = r95.map((r) => `${escHtml(mLabel(r.model))}: <b>${r["vi_phạm"]}</b>`).join(" · ");
+    const rej95 = r95.filter((r) => rowFailures(r).length > 0);
+    const best95 = bestPinball(r95);
+    const best99 = bestPinball(r99);
+    const br99 = r99.map((r) => `${escHtml(mLabel(r.model))}: <b>${r["vi_phạm"]}</b> (${escHtml(r.Basel || "—")})`).join(" · ");
+    const rej99 = r99.filter((r) => rowFailures(r).length > 0);
+    const longN = longRows && longRows.length ? longRows[0].n : null;
+    const longExp99 = longRows && longRows.length ? fmtNum((longRows.find((x) => String(x["mức_tin_cậy"]) === "99%") || {})["kỳ_vọng"], 1) : null;
+
+    // Tổng hợp các ngày vi phạm VaR99 cụ thể (nếu có)
+    const dates99Set = new Set();
+    r99.forEach((r) => {
+      if (r["ngày_vi_phạm"]) {
+        String(r["ngày_vi_phạm"]).split(",").map((s) => s.trim()).filter(Boolean).forEach((d) => dates99Set.add(d));
+      }
+    });
+    const dates99Txt = dates99Set.size
+      ? `Ngày xảy ra vi phạm VaR99: <b>${escHtml([...dates99Set].join(", "))}</b>. `
+      : `Không có ngày nào vượt ngưỡng VaR99 trong kỳ kiểm tra này. `;
+
+    const line95 = `<li><b>Mức VaR 95% trên ${escHtml(symbol)} (kỳ vọng ~${exp95} ngày vượt ngưỡng):</b> Thực tế số ngày vượt VaR lần lượt là ${br95}. `
+      + (rej95.length
+        ? `<span style="color:var(--negative,#d83c3c)">Bị bác bỏ: ${rej95.map((r) => `${escHtml(mLabel(r.model))} (${escHtml(rowFailures(r).join(", "))})`).join("; ")}.</span> `
+        : `Cả ${r95.length}/${r95.length} mô hình đều nằm trong vùng sai số cho phép (p ≥ 0.05). `)
+      + (best95 ? `Mô hình bám sát ngưỡng lỗ 95% nhất trên ${escHtml(symbol)}: <b>${escHtml(mLabel(best95.model))}</b> (Pinball Loss ${fmtNum(Number(best95.pinball_loss) * 100, 3)}%).` : "")
+      + `</li>`;
+
+    const tailNote = Number(r99[0]?.["kỳ_vọng"] || 0) < 5
+      ? (longN
+        ? `Hạn chế cỡ mẫu: ${n} ngày chỉ kỳ vọng ~${exp99} lần vượt ngưỡng 99% (&lt; 5 lần, bằng chứng “không bác bỏ” còn yếu và Christoffersen bỏ trống), nên cần đối chiếu thêm với <b>bảng mẫu dài ${longN} ngày OOS của ${escHtml(symbol)}</b> bên dưới (kỳ vọng ~${longExp99} vi phạm ở 99%).`
+        : `Lưu ý: với ${n} ngày, mức 99% chỉ kỳ vọng ~${exp99} vi phạm nên bằng chứng thống kê còn yếu.`)
+      : "";
+
+    const line99 = `<li><b>Mức VaR 99% trên ${escHtml(symbol)} (kỳ vọng ~${exp99} ngày vượt ngưỡng):</b> Thực tế ${br99}. ${dates99Txt}`
+      + (rej99.length
+        ? `<span style="color:var(--negative,#d83c3c)">Phát hiện vi phạm kiểm định: ${rej99.map((r) => `${escHtml(mLabel(r.model))} (${escHtml(rowFailures(r).join(", "))})`).join("; ")}.</span> `
+        : "")
+      + (best99 ? `Pinball Loss 99% thấp nhất: <b>${escHtml(mLabel(best99.model))}</b> (${fmtNum(Number(best99.pinball_loss) * 100, 3)}%). ` : "")
+      + tailNote + `</li>`;
+
+    // Câu hỏi 2: Đối chiếu ES dự báo TB vs Lỗ thực tế TB trong các ngày vượt VaR
+    const esPairs95 = r95.filter((r) => r["ES_dự_báo_trung_bình_%_ngày_vi_phạm"] != null && r["lỗ_thực_tế_trung_bình_%_ngày_vi_phạm"] != null);
+    const esRej = rows.filter((r) => r.ES_Z2_p != null && Number(r.ES_Z2_p) < 0.05);
+    const lineEs = esPairs95.length
+      ? `<li><b>Độ sát của ES trong các ngày vượt VaR (Câu hỏi 2):</b> Ở mức 95%, ES dự báo TB so với lỗ thực tế TB lần lượt là `
+        + esPairs95.map((r) => `${escHtml(mLabel(r.model))}: <b>${fmtPct(r["ES_dự_báo_trung_bình_%_ngày_vi_phạm"], 2)}</b> vs <b>${fmtPct(r["lỗ_thực_tế_trung_bình_%_ngày_vi_phạm"], 2)}</b>`).join(" · ")
+        + `. ` + (esRej.length
+          ? `<span style="color:var(--negative,#d83c3c)">Cảnh báo đánh giá thấp ES (Z2 p &lt; 0.05): ${esRej.map((r) => `${escHtml(mLabel(r.model))} (${escHtml(r["mức_tin_cậy"])})`).join(", ")}.</span>`
+          : `Kiểm định Acerbi–Székely ES-Z2 đều không bác bỏ (p ≥ 0.05) — mức đệm ES dự báo bám sát hoặc bao phủ an toàn tổn thất thực tế khi vượt ngưỡng.`)
+        + `</li>`
+      : "";
+
+    return `<div class="bt-ext-callout${anyRejected ? " has-warn" : ""}"><span class="bt-ext-title">Nhận xét thực nghiệm riêng cho ${escHtml(symbol)} — Tập ngắn ${n} ngày OOS${span}</span><ul>${line95}${line99}${lineEs}</ul></div>`;
+  }
+
+  // Bảng mẫu dài: tổng hợp theo từng mô hình ở cả 2 mức 95% & 99% + đối chứng đuôi dày vs chuẩn
+  const models = [...new Set(rows.map((r) => r.model))];
+  const passedAll = [];
+  const failedList = [];
+  for (const m of models) {
+    const sub = rows.filter((r) => r.model === m);
+    const probs = [];
+    for (const r of sub) {
+      const f = rowFailures(r);
+      if (f.length) probs.push(`${r["mức_tin_cậy"]}: ${f.join(", ")}`);
+    }
+    if (!probs.length) passedAll.push(mLabel(m));
+    else failedList.push(`<b>${escHtml(mLabel(m))}</b> (${escHtml(probs.join(" | "))})`);
+  }
+  const bestLong99 = bestPinball(r99);
+  const passTxt = passedAll.length
+    ? `<li><b>Mô hình vượt qua toàn bộ kiểm định cả 95% &amp; 99% trên ${escHtml(symbol)}:</b> <span style="color:var(--positive,#25b864);font-weight:600">${passedAll.map(escHtml).join(", ")}</span>${bestLong99 ? ` · Sai số Pinball 99% thấp nhất thuộc về <b>${escHtml(mLabel(bestLong99.model))}</b> (${fmtNum(Number(bestLong99.pinball_loss) * 100, 3)}%)` : ""}.</li>`
+    : `<li><b>Đánh giá tổng thể trên ${escHtml(symbol)}:</b> Chuỗi lịch sử dài có biến động đuôi rất gắt nên mọi mô hình đều lộ ít nhất một điểm lệch${bestLong99 ? `; mô hình giữ sai số Pinball 99% tốt nhất là <b>${escHtml(mLabel(bestLong99.model))}</b> (${fmtNum(Number(bestLong99.pinball_loss) * 100, 3)}%)` : ""}.</li>`;
+  const failTxt = failedList.length
+    ? `<li><b>Các mô hình bị bác bỏ (p &lt; 0.05) trên ${escHtml(symbol)}:</b> ${failedList.join("; ")}.</li>`
+    : "";
+
+  const gt99 = r99.find((r) => r.model === "GARCH-t (rolling)");
+  const gn95 = r95.find((r) => r.model === "GARCH-chuẩn (đối chứng đuôi mỏng)");
+  const gn99 = r99.find((r) => r.model === "GARCH-chuẩn (đối chứng đuôi mỏng)");
+  let fatTailTxt = "";
+  if (gt99 && gn95 && gn99 && gn99["ES_dự_báo_trung_bình_%_ngày_vi_phạm"] != null) {
+    fatTailTxt = `<li><b>Đối chứng đuôi dày Student-t vs phân phối chuẩn:</b> Khi áp phân phối chuẩn (đuôi mỏng), VaR95 vượt ${gn95["vi_phạm"]}/${exp95} lần (Kupiec p=${fmtNum(gn95.kupiec_p, 3)}) nhưng ở đuôi cực đoan 99% thì ES chuẩn chỉ dự báo <b>${fmtPct(gn99["ES_dự_báo_trung_bình_%_ngày_vi_phạm"], 2)}</b> so với lỗ thực tế TB <b>${fmtPct(gn99["lỗ_thực_tế_trung_bình_%_ngày_vi_phạm"], 2)}</b> (Z2=${fmtNum(gn99.ES_Z2, 3)}, p=${fmtNum(gn99.ES_Z2_p, 3)}); trong khi <b>GARCH-t (rolling)</b> dự báo ES99 <b>${fmtPct(gt99["ES_dự_báo_trung_bình_%_ngày_vi_phạm"], 2)}</b> bám sát lỗ thực <b>${fmtPct(gt99["lỗ_thực_tế_trung_bình_%_ngày_vi_phạm"], 2)}</b> (Z2 p=${fmtNum(gt99.ES_Z2_p, 3)}) — ủng hộ mạnh mẽ việc dùng phân phối đuôi dày.</li>`;
+  }
+  return `<div class="bt-ext-callout"><span class="bt-ext-title">Kết luận dài hạn riêng cho ${escHtml(symbol)} — Mẫu dài ${n} ngày OOS${span} (kỳ vọng ${exp95} vi phạm ở 95% · ${exp99} ở 99%)</span><ul>${passTxt}${failTxt}${fatTailTxt}</ul></div>`;
+}
+
+function extTable(rows, title, symbol, isLong = false, longRows = null) {
+  if (!rows || !rows.length) return "";
+  const body = rows.map((r) => `<tr><td>${escHtml(mLabel(r.model))}</td><td>${escHtml(r["mức_tin_cậy"])}</td><td>${r.n}</td><td>${r["vi_phạm"]} / ${fmtNum(r["kỳ_vọng"], 1)}</td><td>${pCell(r.kupiec_p)}</td><td>${chCell(r)}</td><td>${esActualCell(r)}</td><td>${r.ES_Z2 == null ? "—" : fmtNum(r.ES_Z2, 3)}</td><td>${pCell(r.ES_Z2_p)}</td><td>${baselBadge(r.Basel)}</td></tr>`).join("");
+  const callout = extCoinCallout(rows, symbol || state.symbol, isLong, longRows);
+  return `<h3 class="subheading">${escHtml(title)}</h3><div class="table-wrap"><table><thead><tr><th>Mô hình</th><th>Mức</th><th>n</th><th>Vi phạm / kỳ vọng</th><th>Kupiec p</th><th>Christoffersen p</th><th title="ES dự báo trung bình so với lỗ thực tế trung bình trong các ngày vượt ngưỡng VaR">ES dự báo / Lỗ thực TB</th><th>ES-Z2</th><th>Z2 p</th><th>Basel</th></tr></thead><tbody>${body}</tbody></table></div>${callout}`;
+}
+function extDm(rows, title) {
+  if (!rows || !rows.length) return "";
+  const body = rows.map((r) => `<tr><td>${escHtml(mLabel(r.model))}</td><td>${escHtml(r["mức_tin_cậy"])}</td><td>${r.DM_stat == null ? "—" : fmtNum(r.DM_stat, 2)}</td><td>${dmPCell(r.DM_stat, r.p_value)}</td><td style="white-space:normal;min-width:240px;">${dmVerdict(r)}</td></tr>`).join("");
+  return `<h3 class="subheading">${escHtml(title)}</h3><div class="table-wrap"><table><thead><tr><th>Mô hình</th><th>Mức</th><th>Chỉ số DM</th><th>Giá trị p</th><th>Diễn giải dễ hiểu (so với mốc Historical 22d)</th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+async function loadBacktestExtended() {
+  const body = $("#bt-ext-body"); if (!body) return;
+  const reqSym = state.symbol;
+  try {
+    const d = await api(`/api/backtest-extended?symbol=${reqSym}`);
+    if (reqSym !== state.symbol) return;
+    const nu = (d.nu || [])[0];
+    const nuRef = nu ? (nu["nu_toàn_mẫu(live_tham_chiếu)"] ?? nu["nu_toàn_mẫu(code gốc, rò rỉ)"]) : null;
+    const spanShort = nu && nu.test_start && nu.test_end ? ` (${nu.test_start} → ${nu.test_end})` : "";
+    setText("#bt-ext-note", nu
+      ? `${reqSym} · ν Student-t thống nhất (chỉ tập train) = ${fmtNum(nu["nu_train_only(dùng)"], 2)} · kỳ test ${nu.n_test} ngày${spanShort}${nuRef != null ? ` · đối chiếu ν toàn mẫu (nếu rò rỉ) = ${fmtNum(nuRef, 2)}` : ""}`
+      : `Backtest mở rộng theo mô hình — ${reqSym}`);
+    const l0 = (d.long || [])[0];
+    const longTitle = l0
+      ? `Mẫu dài ${l0.n} ngày OOS của ${reqSym}${l0["từ_ngày"] && l0["đến_ngày"] ? ` (${l0["từ_ngày"]} → ${l0["đến_ngày"]}` + (l0["cửa_sổ_train"] ? ` · cửa sổ trượt ${l0["cửa_sổ_train"]} ngày)` : ")") : " (rolling)"}`
+      : "Mẫu dài OOS (rolling)";
+    body.innerHTML = extTable(d.test_window, `Tập test ngắn của ${reqSym} (${nu ? nu.n_test : "?"} ngày OOS — so sánh đủ 4 mô hình)`, reqSym, false, d.long)
+      + extDm(d.test_window_dm, `Đấu đối kháng Diebold–Mariano (Pinball Loss) vs Historical 22d — Tập ngắn (${reqSym})`)
+      + extTable(d.long, longTitle, reqSym, true, null)
+      + extDm(d.long_dm, `Đấu đối kháng Diebold–Mariano (Pinball Loss) vs Historical 22d-t — Mẫu dài (${reqSym})`);
+  } catch (error) {
+    if (reqSym !== state.symbol) return;
+    setText("#bt-ext-note", `Chưa có bảng backtest mở rộng cho ${reqSym}`);
+    body.innerHTML = `<p class="panel-subtitle">${escHtml(error.message)}</p>`;
+  }
+}
 async function loadExplain() {
   const data = await api(`/api/explain?symbol=${state.symbol}`); state.explain = data; const max = Math.max(...(data.feature_importance || []).map((x) => Number(x.share)), .001);
   if ($("#importance-list")) $("#importance-list").innerHTML = (data.feature_importance || []).map((item) => `<div class="importance-row"><span title="${data.feature_schema?.[item.feature] || ""}">${item.feature}</span><div class="importance-bar"><div class="importance-fill" style="width:${(Number(item.share) / max * 100).toFixed(1)}%"></div></div><b>${fmtPct(Number(item.share) * 100, 0)}</b></div>`).join("") || "<p class='panel-copy'>Chưa có dữ liệu mức độ quan trọng của biến.</p>";
@@ -549,8 +746,10 @@ async function loadStatus(withQuality = false) {
   const cfgSymbols = status.config?.symbols;
   if (Array.isArray(cfgSymbols) && cfgSymbols.length && JSON.stringify(cfgSymbols) !== JSON.stringify(state.symbols)) {
     state.symbols = cfgSymbols;
-    if (!state.symbols.includes(state.symbol)) state.symbol = state.symbols[0];
+    const removedCurrent = !state.symbols.includes(state.symbol);
+    if (removedCurrent) state.symbol = state.symbols[0];
     renderSymbolSwitcher(state.symbols, $("#global-search")?.value?.trim() || "");
+    if (removedCurrent) { syncControls(); reloadSymbol(); }
   }
   setText("#last-sync", localTime(status.server_time_utc || new Date().toISOString()));
   if ($("#dataset-table tbody")) $("#dataset-table tbody").innerHTML = (status.datasets || []).map((row) => `<tr><td>${row.symbol}</td><td>${row.interval}</td><td>${Number(row.rows || 0).toLocaleString()}</td><td>${localTime(row.last_update_utc)}</td><td>${statusLabel(row.status)}</td></tr>`).join("") || `<tr><td colspan="5">Chưa có bộ dữ liệu.</td></tr>`;
@@ -566,7 +765,7 @@ async function startJob(kind, symbol = null) {
   const endpoint = kind === "prepare" ? symbol ? `/api/admin/prepare?symbol=${encodeURIComponent(symbol)}` : "/api/admin/prepare" : `/api/admin/${kind}?symbol=${encodeURIComponent(symbol || state.symbol)}`;
   try { const result = await api(endpoint, { method: "POST" }); toast(result.message || `Đã bắt đầu: ${jobLabel(kind)}.`); setView("data"); watchJob(kind); } catch (error) { toast(error.message, true); }
 }
-function watchJob(kind) { clearInterval(state.jobPoll); const started = Date.now(); disableJobButtons(true); state.jobPoll = setInterval(async () => { try { const status = await loadStatus(false), job = status.background_jobs?.[kind]; if (!job) return; if (job.running) { setText("#job-status", `${jobLabel(kind)} đang chạy… ${Math.round((Date.now() - started) / 1000)} giây`); return; } clearInterval(state.jobPoll); state.jobPoll = null; disableJobButtons(false); if (job.last?.status === "success") { toast(`${jobLabel(kind)} đã hoàn tất.`); state.loadedTabs.clear(); state.performance = state.backtest = state.explain = null; await loadForecast(); } else toast(`${jobLabel(kind)} thất bại. Các file kết quả hiện có được giữ nguyên.`, true); } catch { clearInterval(state.jobPoll); state.jobPoll = null; disableJobButtons(false); } }, 3000); }
+function watchJob(kind) { clearInterval(state.jobPoll); const started = Date.now(); disableJobButtons(true); state.jobPoll = setInterval(async () => { try { const status = await loadStatus(false), job = status.background_jobs?.[kind]; if (!job) return; if (job.running) { setText("#job-status", `${jobLabel(kind)} đang chạy… ${Math.round((Date.now() - started) / 1000)} giây`); return; } clearInterval(state.jobPoll); state.jobPoll = null; disableJobButtons(false); if (job.last?.status === "success") { toast(`${jobLabel(kind)} đã hoàn tất.`); state.loadedTabs.clear(); state.performance = state.backtest = state.explain = null; await loadForecast(); const active = document.querySelector(".nav-item.active")?.dataset.view || "dashboard"; lazyLoad(active); } else toast(`${jobLabel(kind)} thất bại. Các file kết quả hiện có được giữ nguyên.`, true); } catch { clearInterval(state.jobPoll); state.jobPoll = null; disableJobButtons(false); } }, 3000); }
 
 /* Events + lazy loading */
 async function lazyLoad(view) {
@@ -614,6 +813,7 @@ function bindEvents() {
   $("#btn-retrain")?.addEventListener("click", () => { if (confirm("Bạn có chắc muốn huấn luyện lại toàn bộ mô hình cho tài sản đang chọn không?")) startJob("retrain"); });
   $("#btn-refresh-status")?.addEventListener("click", () => loadStatus(true));
   $("#btn-pdf-models")?.addEventListener("click", () => window.open(`/api/report?symbol=${state.symbol}`, "_blank"));
+  $("#btn-pdf-backtest")?.addEventListener("click", () => window.open(`/api/report?symbol=${state.symbol}`, "_blank"));
 }
 
 loadPrefs(); renderSymbolSwitcher(state.symbols); bindNavigation(); bindChartEvents(); bindEvents(); loadAll().catch((error) => toast(`Initialization error: ${error.message}`, true));

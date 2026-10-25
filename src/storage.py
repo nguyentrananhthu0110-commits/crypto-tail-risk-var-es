@@ -141,3 +141,11 @@ def get_models(symbol: str | None = None) -> list[dict]:
 def get_last_jobs(limit: int = 10) -> list[dict]:
     with _db() as con:
         return [dict(r) for r in con.execute("SELECT * FROM jobs ORDER BY run_id DESC LIMIT ?", (limit,))]
+
+def delete_symbol_records(symbol: str) -> None:
+    """Xóa toàn bộ bản ghi manifest SQLite của một mã đã hủy niêm yết."""
+    sym = symbol.upper()
+    with _db() as con:
+        con.execute("DELETE FROM datasets WHERE symbol=?", (sym,))
+        con.execute("DELETE FROM models WHERE symbol=?", (sym,))
+        con.execute("DELETE FROM jobs WHERE symbol=?", (sym,))

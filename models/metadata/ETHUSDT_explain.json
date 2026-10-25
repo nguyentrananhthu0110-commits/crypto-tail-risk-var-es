@@ -3,56 +3,56 @@
   "feature_importance": [
     {
       "feature": "rv_lag1",
-      "importance_rmse_increase": 0.0002727523375397798,
-      "share": 0.42610204178940975
-    },
-    {
-      "feature": "range_lag1",
-      "importance_rmse_increase": 0.00021506096556062927,
-      "share": 0.33597481642561927
+      "importance_rmse_increase": 3.125924963327939e-05,
+      "share": 0.6086019921890482
     },
     {
       "feature": "volume_chg_lag1",
-      "importance_rmse_increase": 3.854814110153758e-05,
-      "share": 0.060221084734629816
-    },
-    {
-      "feature": "ret_lag1",
-      "importance_rmse_increase": 3.461563474978788e-05,
-      "share": 0.054077603065711084
-    },
-    {
-      "feature": "log_volume_lag1",
-      "importance_rmse_increase": 3.045847010018526e-05,
-      "share": 0.047583153334397284
-    },
-    {
-      "feature": "rv_m",
-      "importance_rmse_increase": 1.763154261123258e-05,
-      "share": 0.027544534995772373
+      "importance_rmse_increase": 1.7333968652295546e-05,
+      "share": 0.33748372011778327
     },
     {
       "feature": "rv_lag2",
-      "importance_rmse_increase": 1.308945335969894e-05,
-      "share": 0.02044874428128969
-    },
-    {
-      "feature": "abs_ret_lag1",
-      "importance_rmse_increase": 1.1208101288447863e-05,
-      "share": 0.017509638548537165
-    },
-    {
-      "feature": "rv_lag3",
-      "importance_rmse_increase": 5.474859715772851e-06,
-      "share": 0.008552993255506612
-    },
-    {
-      "feature": "rv_w",
-      "importance_rmse_increase": 1.270868460597754e-06,
-      "share": 0.0019853895691269324
+      "importance_rmse_increase": 2.6143570746525735e-06,
+      "share": 0.050900227695586144
     },
     {
       "feature": "ret_sq_lag1",
+      "importance_rmse_increase": 1.5480930901199015e-07,
+      "share": 0.003014059997582319
+    },
+    {
+      "feature": "rv_lag3",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
+    },
+    {
+      "feature": "rv_w",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
+    },
+    {
+      "feature": "rv_m",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
+    },
+    {
+      "feature": "ret_lag1",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
+    },
+    {
+      "feature": "abs_ret_lag1",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
+    },
+    {
+      "feature": "range_lag1",
+      "importance_rmse_increase": 0.0,
+      "share": 0.0
+    },
+    {
+      "feature": "log_volume_lag1",
       "importance_rmse_increase": 0.0,
       "share": 0.0
     },
@@ -74,24 +74,24 @@
     "range_lag1": "log(High/Low) ngày t",
     "log_volume_lag1": "log(1+volume ngày t)",
     "volume_chg_lag1": "Thay đổi log volume ngày t",
-    "cross_rv_lag1": "RV ngày t của tài sản còn lại (BTC<->ETH)"
+    "cross_rv_lag1": "RV ngày t của tài sản dẫn dắt chéo (BTC cho altcoin/ETH; ETH cho BTC)"
   },
   "importance_method": "Permutation importance trên tập test (mức tăng RMSE khi xáo trộn feature). Không phải bằng chứng nhân quả.",
   "garch": {
     "engine": "arch_garch11_t",
-    "mu": -0.00013556942733341823,
-    "omega": 0.00033062495247679455,
-    "alpha": 0.21432580562862172,
-    "beta": 0.6548164834406041,
-    "nu": 2.9071796431064167,
-    "unconditional_var": 0.0025265989304344492
+    "mu": -0.00020652114314501807,
+    "omega": 0.0003301367992997624,
+    "alpha": 0.21017276287256195,
+    "beta": 0.6559564455543031,
+    "nu": 2.916414941755479,
+    "unconditional_var": 0.0024660853605202246
   },
   "har": {
     "coef": [
-      0.0007149941583861906,
-      0.2649048175774961,
-      0.18964904293976637,
-      -0.001574647490561959
+      0.0007290242663321825,
+      0.26578428555069233,
+      0.18807626865842303,
+      -0.00890321251204703
     ],
     "terms": [
       "intercept",
@@ -100,7 +100,7 @@
       "RV_month(22d)"
     ]
   },
-  "xgboost_engine": "xgboost",
+  "xgboost_engine": "xgboost_log_rv",
   "xgboost_params": {
     "objective": "reg:squarederror",
     "base_score": "None",
@@ -141,6 +141,9 @@
     "subsample": "0.85",
     "tree_method": "None",
     "validate_parameters": "None",
-    "verbosity": "None"
+    "verbosity": "None",
+    "target_transform": "log_rv_duan_smearing",
+    "smear_factor": "1.124069",
+    "min_var_floor": "3.2165573919319497e-06"
   }
 }
